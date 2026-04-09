@@ -12,7 +12,7 @@ The number of small balls can be high (thousands). All balls can move and bounce
 The `assignment-01` folder in the repo includes:
 * `sketch01` folder
 * `sketch02` folder
-* `ass01` folder, which the game in two different versions:
+* `ass01` folder, which includes the game in two different versions:
   1. `thread_version` based on Java multithreaded programming, using only default/platform threads
   2. `task_version` applying Task-based approach, using Java Executor Framework, where useful
 
