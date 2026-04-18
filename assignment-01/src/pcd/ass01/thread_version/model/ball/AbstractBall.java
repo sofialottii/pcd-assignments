@@ -79,7 +79,7 @@ public abstract class AbstractBall implements Ball {
         }
     }
 
-    public void resolveCollision(AbstractBall a, AbstractBall b) {
+    public static void resolveCollision(AbstractBall a, AbstractBall b) {
         double dx   = b.pos.x() - a.pos.x();
         double dy   = b.pos.y() - a.pos.y();
         double dist = Math.hypot(dx, dy);
@@ -107,6 +107,10 @@ public abstract class AbstractBall implements Ball {
                 a.vel = new V2d(a.vel.x() - (imp / a.mass) * nx, a.vel.y() - (imp / a.mass) * ny);
                 b.vel = new V2d(b.vel.x() + (imp / b.mass) * nx, b.vel.y() + (imp / b.mass) * ny);
             }
+            a.onCollisionWith(b);
+            b.onCollisionWith(a);
         }
     }
+
+    protected abstract void onCollisionWith(AbstractBall b);
 }

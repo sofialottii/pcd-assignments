@@ -12,6 +12,33 @@ public class SmallBall extends AbstractBall{
         this.lastTouchedBot = false;
         this.lastTouchedPlayer = false;
     }
+    public boolean isLastTouchedPlayer(){
+        return lastTouchedPlayer;
+    }
 
+    public boolean isLastTouchedBot() {
+        return lastTouchedBot;
+    }
+    private void playerTouch(){
+        lastTouchedPlayer = true;
+        lastTouchedBot = false;
+    }
+    private void botTouch(){
+        lastTouchedPlayer = false;
+        lastTouchedBot = true;
+    }
+    private void smallBallTouch(){
+        lastTouchedPlayer = false;
+        lastTouchedBot = false;
+    }
 
+    @Override
+    protected void onCollisionWith(AbstractBall b) {
+        if(b instanceof PlayerBall)
+            playerTouch();
+        if (b instanceof BotBall)
+            botTouch();
+        if (b instanceof SmallBall)
+            smallBallTouch();
+    }
 }
