@@ -76,7 +76,11 @@ public class ViewFrame extends JFrame {
             g2.drawLine(0,oy,ox*2,oy);
 
 
-
+            //holes
+            for (var h: model.getHoles()){
+                g2.setColor(Color.BLACK);
+                drawHole(g2, new BallViewInfo(h.pos(), h.radius()), 9);
+            }
 
             //small balls
 
@@ -106,11 +110,18 @@ public class ViewFrame extends JFrame {
                 drawBall(g2, bot, 3);
             }
 
-            //text
+
+
             g2.setColor(Color.BLACK);
             g2.setStroke(new BasicStroke(1));
-            g2.drawString("Palle in gioco: " + model.getBalls().size(), 20, 40);
-            g2.drawString("FPS: " + model.getFramePerSec(), 20, 60);
+            g2.setFont(new Font("Arial", Font.PLAIN, 14));
+            FontMetrics fm = g2.getFontMetrics();
+
+            String ballsText = "Palle in gioco: " + model.getBalls().size();
+            String fpsText   = "FPS: " + model.getFramePerSec();
+
+            g2.drawString(ballsText, (getWidth() - fm.stringWidth(ballsText)) / 2, 40);
+            g2.drawString(fpsText,   (getWidth() - fm.stringWidth(fpsText))   / 2, 60);
 
             // score player (blu, in basso a sinistra)
             g2.setColor(Color.BLUE);
@@ -120,7 +131,6 @@ public class ViewFrame extends JFrame {
             // score bot (rosso, in basso a destra)
             String botScore = "Bot: " + scoreBoard.getPointBot();
             g2.setColor(Color.RED);
-            FontMetrics fm = g2.getFontMetrics();
             int botScoreWidth = fm.stringWidth(botScore);
             g2.drawString(botScore, getWidth() - botScoreWidth - 20, getHeight() - 20);
 
@@ -143,6 +153,19 @@ public class ViewFrame extends JFrame {
 
             //draw the circle
             g2.drawOval(x0 - radiusX, y0 - radiusY, radiusX * 2, radiusY * 2);
+        }
+
+        private void drawHole(Graphics2D g2, BallViewInfo b, int stroke) {
+            g2.setStroke(new BasicStroke(stroke));
+
+            var p = b.pos();
+            int x0 = (int) (ox + p.x() * delta);
+            int y0 = (int) (oy - p.y() * delta);
+            int radiusX = (int)(b.radius()*delta);
+            int radiusY = (int)(b.radius()*delta);
+
+            //draw the circle
+            g2.fillOval(x0 - radiusX, y0 - radiusY, radiusX * 2, radiusY * 2);
         }
     }
 }

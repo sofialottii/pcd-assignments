@@ -5,6 +5,7 @@ package pcd.ass01.thread_version.model.board;
 import pcd.ass01.thread_version.model.ball.BotBall;
 import pcd.ass01.thread_version.model.ball.PlayerBall;
 import pcd.ass01.thread_version.model.ball.SmallBall;
+import pcd.ass01.thread_version.model.holes.Hole;
 import pcd.ass01.thread_version.model.util.P2d;
 import pcd.ass01.thread_version.model.util.V2d;
 
@@ -13,6 +14,10 @@ import java.util.List;
 
 public class MassiveBoardConf implements BoardConf {
 
+	private static final double X0 = -1.5;
+	private static final double Y0 = -1.0;
+	private static final double X1 = 1.5;
+	private static final double Y1 = 1.0;
 	@Override
 	public PlayerBall getPlayerBall() {
 		return  new PlayerBall(new P2d(-0.5, -0.75));
@@ -38,9 +43,18 @@ public class MassiveBoardConf implements BoardConf {
     	return balls;
 	}
 
+	@Override
+	public List<Hole> getHoles() {
+		var holes = new ArrayList<Hole>();
+		var h1 = new Hole(new P2d(X0 + 0.2, Y1 - 0.01));
+		var h2 = new Hole(new P2d(X1 - 0.2, Y1 - 0.01 ));
 
+		holes.add(h1);
+		holes.add(h2);
+		return holes;
+	}
 
 	public Boundary getBoardBoundary() {
-        return new Boundary(-1.5,-1.0,1.5,1.0);
+		return new Boundary(X0,Y0, X1, Y1);
 	}
 }

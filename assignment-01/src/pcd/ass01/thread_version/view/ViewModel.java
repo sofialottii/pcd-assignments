@@ -7,12 +7,14 @@ import java.util.List;
 public class ViewModel {
 
     private final List<SmallBallViewInfo> balls;
+    private final List<BallViewInfo> holes;
     private BallViewInfo playerBall;
     private BallViewInfo botBall;
     private int framePerSec;
 
     public ViewModel() {
         this.balls = new ArrayList<>();
+        this.holes = new ArrayList<>();
         this.framePerSec = 0;
     }
 
@@ -29,6 +31,11 @@ public class ViewModel {
         //bot ball
         var bot = board.getBotBall();
         this.botBall = new BallViewInfo(bot.getPos(), bot.getRadius());
+
+        //holes
+        for (var h : board.getHoles()) {
+            this.holes.add(new BallViewInfo(h.getPosition(), h.getRadius()));
+        }
 
         this.framePerSec = fps;
     }
@@ -47,5 +54,9 @@ public class ViewModel {
 
     public synchronized int getFramePerSec() {
         return framePerSec;
+    }
+
+    public synchronized List<BallViewInfo> getHoles(){
+        return new ArrayList<>(holes);
     }
 }

@@ -17,10 +17,10 @@ public class Poool {
         GameState gameState = new GameState();
 
         //BoardConf config = new MinimalBoardConf();
-        BoardConf config = new LargeBoardConf();
-        //BoardConf config = new MassiveBoardConf();
+        //BoardConf config = new LargeBoardConf();
+        BoardConf config = new MassiveBoardConf();
 
-        board.init(config);
+        board.init(config, gameState);
 
         ViewModel viewModel = new ViewModel();
 
