@@ -1,4 +1,4 @@
-package pcd.ass01.thread_version.model;
+package pcd.ass01.thread_version.model.util;
 
 public record P2d(double x, double y)  {
 
