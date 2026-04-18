@@ -28,8 +28,8 @@ public class Board {
     public void updateState(long dt) {
 
     	playerBall.updateState(dt, this);
-
     	botBall.updateState(dt, this);
+
     	for (var b: balls) {
     		b.updateState(dt, this);
     	}       	
@@ -51,6 +51,10 @@ public class Board {
     
     public PlayerBall getPlayerBall() {
     	return playerBall;
+    }
+
+    public BotBall getBotBall() {
+        return botBall;
     }
     
     public  Boundary getBounds(){
