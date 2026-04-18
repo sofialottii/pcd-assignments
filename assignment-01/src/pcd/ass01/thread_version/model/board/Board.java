@@ -2,21 +2,21 @@ package pcd.ass01.thread_version.model.board;
 
 
 
-import pcd.ass01.thread_version.model.ball.Ball;
+import pcd.ass01.thread_version.model.ball.AbstractBall;
 
 import java.util.List;
 
 public class Board {
 
-    private List<Ball> balls;
-    private Ball playerBall;
+    private List<AbstractBall> balls;
+    private AbstractBall playerBall;
     private Boundary bounds;
     
     public Board(){} 
     
     public void init(BoardConf conf) {
     	balls = conf.getSmallBalls();    	
-    	playerBall = conf.getPlayerBall(); 
+    	playerBall = conf.getPlayerBall();
     	bounds = conf.getBoardBoundary();
     }
     
@@ -30,20 +30,20 @@ public class Board {
     	
     	for (int i = 0; i < balls.size() - 1; i++) {
             for (int j = i + 1; j < balls.size(); j++) {
-                Ball.resolveCollision(balls.get(i), balls.get(j));
+                AbstractBall.resolveCollision(balls.get(i), balls.get(j));
             }
         }
     	for (var b: balls) {
-    		Ball.resolveCollision(playerBall, b);
+    		AbstractBall.resolveCollision(playerBall, b);
     	} 
     	   	    	
     }
     
-    public List<Ball> getBalls(){
+    public List<AbstractBall> getBalls(){
     	return balls;
     }
     
-    public Ball getPlayerBall() {
+    public AbstractBall getPlayerBall() {
     	return playerBall;
     }
     

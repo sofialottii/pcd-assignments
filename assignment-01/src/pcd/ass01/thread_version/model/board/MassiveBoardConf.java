@@ -3,6 +3,8 @@ package pcd.ass01.thread_version.model.board;
 
 
 import pcd.ass01.thread_version.model.ball.Ball;
+import pcd.ass01.thread_version.model.ball.PlayerBall;
+import pcd.ass01.thread_version.model.ball.SmallBall;
 import pcd.ass01.thread_version.model.util.P2d;
 import pcd.ass01.thread_version.model.util.V2d;
 
@@ -12,25 +14,27 @@ import java.util.List;
 public class MassiveBoardConf implements BoardConf {
 
 	@Override
-	public Ball getPlayerBall() {
-		return  new Ball(new P2d(0, -0.75), 0.05, 1.5, new V2d(0,0));
+	public PlayerBall getPlayerBall() {
+		return  new PlayerBall(new P2d(0, -0.75)
 	}
 
 	@Override
-	public List<Ball> getSmallBalls() {		
+	public List<SmallBall> getSmallBalls() {
 		var ballRadius = 0.01;
-        var balls = new ArrayList<Ball>();
+        var balls = new ArrayList<SmallBall>();
 
     	for (int row = 0; row < 30; row++) {
     		for (int col = 0; col < 150; col++) {
         		var px = -1.0 + col*0.015;
         		var py =  row*0.015;
-        		var b = new Ball(new P2d(px, py), ballRadius, 0.25, new V2d(0,0));
+				var b = new SmallBall(new P2d(px, py), ballRadius, 0.25, new V2d(0,0));
             	balls.add(b);    			
     		}
     	}		
     	return balls;
 	}
+
+
 
 	public Boundary getBoardBoundary() {
         return new Boundary(-1.5,-1.0,1.5,1.0);

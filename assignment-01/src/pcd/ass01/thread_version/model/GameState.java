@@ -15,8 +15,7 @@ public class GameState {
     }
 
     public int getPointPlayer() {
-        return pointPlayer;
-    }
+        return pointPlayer;}
 
     public void addPointBot() {
         this.pointBot++;
