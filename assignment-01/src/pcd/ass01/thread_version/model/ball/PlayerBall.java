@@ -7,6 +7,7 @@ public class PlayerBall extends AbstractBall{
 
     private static final double PLAYER_RADIUS = 20.0;
     private static final double PLAYER_MASS = 5.0;
+    private static final double MAX_SPEED = 15.0;
 
     public PlayerBall(P2d startPos) {
         super(startPos, PLAYER_RADIUS, PLAYER_MASS, new V2d(0, 0));
@@ -14,7 +15,13 @@ public class PlayerBall extends AbstractBall{
 
     @Override
     public void kick(V2d adding) {
-        super.kick(this.getVel().sum(adding));
+        V2d newVel = this.getVel().sum(impulse);
+
+        if (newVel.abs() > MAX_SPEED) {
+            newVel = newVel.mul(MAX_SPEED / newVel.abs());
+        }
+
+        super.kick(newVel);
     }
 
 }
