@@ -14,9 +14,9 @@ import java.util.List;
 
 public class LargeBoardConf implements BoardConf {
 
-	private static final double X0 = -1.5;
+	private static final double X0 = -1.4;
 	private static final double Y0 = -1.0;
-	private static final double X1 = 1.5;
+	private static final double X1 = 1.4;
 	private static final double Y1 = 1.0;
 	@Override
 	public PlayerBall getPlayerBall() {

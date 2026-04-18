@@ -16,9 +16,9 @@ public class Poool {
         Board board = new Board();
         GameState gameState = new GameState();
 
-        //BoardConf config = new MinimalBoardConf();
+        BoardConf config = new MinimalBoardConf();
         //BoardConf config = new LargeBoardConf();
-        BoardConf config = new MassiveBoardConf();
+        //BoardConf config = new MassiveBoardConf();
 
         board.init(config, gameState);
 
@@ -30,11 +30,8 @@ public class Poool {
 
             ActiveController controller = new ActiveController(board, view, viewModel);
 
-            /* event listener
-
-
-             */
-
+            view.setFocusable(true);
+            view.requestFocusInWindow();
             view.setVisible(true);
 
             //per fare partire il thread del gameloop

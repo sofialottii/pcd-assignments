@@ -20,6 +20,7 @@ public class ActiveController extends Thread {
         this.view = view;
         this.viewModel = viewModel;
         this.cmdBuffer = new ConcurrentLinkedQueue<>();
+        this.view.addKeyListener(new PlayerInputHandler(this));
     }
 
     @Override
@@ -65,6 +66,7 @@ public class ActiveController extends Thread {
     public void notifyNewCmd(Cmd cmd) {
         cmdBuffer.add(cmd);
     }
+
 
     public void stopGame() {
         this.running = false;
