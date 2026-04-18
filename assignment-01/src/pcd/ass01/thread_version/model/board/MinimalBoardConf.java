@@ -15,7 +15,7 @@ public class MinimalBoardConf implements BoardConf {
 
 	@Override
 	public PlayerBall getPlayerBall() {
-    	return new PlayerBall(new P2d(0.5, -0.75));
+    	return new PlayerBall(new P2d(-0.5, -0.75));
 	}
 
 	@Override
