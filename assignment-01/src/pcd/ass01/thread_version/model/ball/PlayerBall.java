@@ -5,7 +5,7 @@ import pcd.ass01.thread_version.model.util.V2d;
 
 public class PlayerBall extends AbstractBall{
 
-    private static final double PLAYER_RADIUS = 20.0;
+    private static final double PLAYER_RADIUS = 0.05;
     private static final double PLAYER_MASS = 5.0;
     private static final double MAX_SPEED = 15.0;
 

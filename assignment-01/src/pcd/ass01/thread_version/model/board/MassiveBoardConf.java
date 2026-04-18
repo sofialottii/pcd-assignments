@@ -2,7 +2,7 @@ package pcd.ass01.thread_version.model.board;
 
 
 
-import pcd.ass01.thread_version.model.ball.Ball;
+import pcd.ass01.thread_version.model.ball.BotBall;
 import pcd.ass01.thread_version.model.ball.PlayerBall;
 import pcd.ass01.thread_version.model.ball.SmallBall;
 import pcd.ass01.thread_version.model.util.P2d;
@@ -15,7 +15,11 @@ public class MassiveBoardConf implements BoardConf {
 
 	@Override
 	public PlayerBall getPlayerBall() {
-		return  new PlayerBall(new P2d(0, -0.75));
+		return  new PlayerBall(new P2d(-0.5, -0.75));
+	}
+	@Override
+	public BotBall getBotBall() {
+		return new BotBall(new P2d(0.5, -0.75));
 	}
 
 	@Override

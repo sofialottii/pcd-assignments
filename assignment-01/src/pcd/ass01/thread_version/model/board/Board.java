@@ -3,13 +3,17 @@ package pcd.ass01.thread_version.model.board;
 
 
 import pcd.ass01.thread_version.model.ball.AbstractBall;
+import pcd.ass01.thread_version.model.ball.BotBall;
+import pcd.ass01.thread_version.model.ball.PlayerBall;
+import pcd.ass01.thread_version.model.ball.SmallBall;
 
 import java.util.List;
 
 public class Board {
 
-    private List<AbstractBall> balls;
-    private AbstractBall playerBall;
+    private List<SmallBall> balls;
+    private PlayerBall playerBall;
+    private BotBall botBall;
     private Boundary bounds;
     
     public Board(){} 
@@ -17,13 +21,15 @@ public class Board {
     public void init(BoardConf conf) {
     	balls = conf.getSmallBalls();    	
     	playerBall = conf.getPlayerBall();
+        botBall = conf.getBotBall();
     	bounds = conf.getBoardBoundary();
     }
     
     public void updateState(long dt) {
 
     	playerBall.updateState(dt, this);
-    	
+
+    	botBall.updateState(dt, this);
     	for (var b: balls) {
     		b.updateState(dt, this);
     	}       	
@@ -39,11 +45,11 @@ public class Board {
     	   	    	
     }
     
-    public List<AbstractBall> getBalls(){
+    public List<SmallBall> getBalls(){
     	return balls;
     }
     
-    public AbstractBall getPlayerBall() {
+    public PlayerBall getPlayerBall() {
     	return playerBall;
     }
     
