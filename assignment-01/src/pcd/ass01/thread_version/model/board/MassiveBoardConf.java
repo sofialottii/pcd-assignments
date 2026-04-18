@@ -15,7 +15,7 @@ public class MassiveBoardConf implements BoardConf {
 
 	@Override
 	public PlayerBall getPlayerBall() {
-		return  new PlayerBall(new P2d(0, -0.75)
+		return  new PlayerBall(new P2d(0, -0.75));
 	}
 
 	@Override
