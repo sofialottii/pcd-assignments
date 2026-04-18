@@ -112,5 +112,6 @@ public abstract class AbstractBall implements Ball {
         }
     }
 
-    protected abstract void onCollisionWith(AbstractBall b);
+    protected void onCollisionWith(AbstractBall b){
+    }
 }

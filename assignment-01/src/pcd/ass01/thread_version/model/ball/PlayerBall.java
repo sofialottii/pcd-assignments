@@ -17,5 +17,4 @@ public class PlayerBall extends AbstractBall{
         super.kick(this.getVel().sum(adding));
     }
 
-
 }
