@@ -15,8 +15,8 @@ public class Sketch01 {
 		 * scegli quello che preferisci
 		 */
 		
-		var boardConf = new MinimalBoardConf();
-		// var boardConf = new LargeBoardConf();
+		//var boardConf = new MinimalBoardConf();
+		 var boardConf = new LargeBoardConf();
 		// var boardConf = new MassiveBoardConf();
 		
 		Board board = new Board();

@@ -1,5 +1,7 @@
 package pcd.ass01.thread_version.view;
 
+import pcd.ass01.thread_version.model.GameState;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -10,9 +12,11 @@ public class ViewFrame extends JFrame {
     private final VisualiserPanel panel;
     private final ViewModel model;
     private final RenderSynch sync;
+    private final GameState scoreBoard;
 
-    public ViewFrame(ViewModel model, int w, int h) {
+    public ViewFrame(ViewModel model, int w, int h, GameState scoreBoard) {
         this.model = model;
+        this.scoreBoard = scoreBoard;
         this.sync = new RenderSynch();
 
         setTitle("Poool Game");
@@ -66,10 +70,24 @@ public class ViewFrame extends JFrame {
             g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g2.clearRect(0, 0, getWidth(), getHeight());
 
+            g2.setColor(Color.LIGHT_GRAY);
+            g2.setStroke(new BasicStroke(1));
+            g2.drawLine(ox,0,ox,oy*2);
+            g2.drawLine(0,oy,ox*2,oy);
+
+
+
+
             //small balls
-            g2.setColor(Color.BLACK);
+
             for (var b : model.getBalls()) {
-                drawBall(g2, b, 1);
+                g2.setColor(Color.BLACK);
+                if(b.isPlayerTouch())
+                    g2.setColor(Color.BLUE);
+                if(b.isBotTouch())
+                    g2.setColor(Color.RED);
+                //new BallViewInfo taken from parameters of Small
+                drawBall(g2, new BallViewInfo(b.pos(), b.radius()), 1);
             }
 
             //player ball
@@ -93,6 +111,18 @@ public class ViewFrame extends JFrame {
             g2.setStroke(new BasicStroke(1));
             g2.drawString("Palle in gioco: " + model.getBalls().size(), 20, 40);
             g2.drawString("FPS: " + model.getFramePerSec(), 20, 60);
+
+            // score player (blu, in basso a sinistra)
+            g2.setColor(Color.BLUE);
+            g2.setFont(new Font("Arial", Font.BOLD, 20));
+            g2.drawString("Player: " + scoreBoard.getPointPlayer(), 20, getHeight() - 20);
+
+            // score bot (rosso, in basso a destra)
+            String botScore = "Bot: " + scoreBoard.getPointBot();
+            g2.setColor(Color.RED);
+            FontMetrics fm = g2.getFontMetrics();
+            int botScoreWidth = fm.stringWidth(botScore);
+            g2.drawString(botScore, getWidth() - botScoreWidth - 20, getHeight() - 20);
 
             //to let gameloop know that view has done
             sync.notifyFrameRendered();
