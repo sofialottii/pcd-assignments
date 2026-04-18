@@ -15,7 +15,7 @@ public class PlayerBall extends AbstractBall{
 
     @Override
     public void kick(V2d adding) {
-        V2d newVel = this.getVel().sum(impulse);
+        V2d newVel = this.getVel().sum(adding);
 
         if (newVel.abs() > MAX_SPEED) {
             newVel = newVel.mul(MAX_SPEED / newVel.abs());

@@ -61,13 +61,3 @@ public class Board {
         return bounds;
     }
 }
-
-/* 
-questa classe è il tavolo, dove ci sono la lista delle palline e anche la playerBall
-
-quando aggiorno, aggiorno lo stato della pallina dell'utente, poi lo stato di tutte le 
-ball, e poi devo risolvere le collisioni (vedi i for da riga 23 in poi)
-L'approccio semplice usato qui: per ogni pallina, controlla le collisioni con tutte le palline
-(riga da 27 a 29)
-a riga 32 si va a verificare se c'è la collisione tra la player ball e ogni pallina 
-*/
