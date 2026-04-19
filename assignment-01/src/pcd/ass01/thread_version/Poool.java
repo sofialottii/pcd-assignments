@@ -2,6 +2,7 @@ package pcd.ass01.thread_version;
 
 
 import pcd.ass01.thread_version.controller.ActiveController;
+import pcd.ass01.thread_version.controller.BotMovements;
 import pcd.ass01.thread_version.model.GameState;
 import pcd.ass01.thread_version.model.board.*;
 import pcd.ass01.thread_version.view.ViewFrame;
@@ -29,6 +30,9 @@ public class Poool {
             ViewFrame view = new ViewFrame(viewModel, 800, 600, gameState);
 
             ActiveController controller = new ActiveController(board, view, viewModel);
+
+            BotMovements bot = new BotMovements(controller, board);
+            bot.start();
 
             view.setFocusable(true);
             view.requestFocusInWindow();
