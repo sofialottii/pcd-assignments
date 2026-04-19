@@ -91,11 +91,13 @@ public class ViewFrame extends JFrame {
             //small balls
 
             for (var b : model.getBalls()) {
-                g2.setColor(Color.BLACK);
-                if(b.isPlayerTouch())
+                if (b.isPlayerTouch()) {
                     g2.setColor(Color.BLUE);
-                if(b.isBotTouch())
+                } else if (b.isBotTouch()) {
                     g2.setColor(Color.RED);
+                } else {
+                    g2.setColor(Color.BLACK);
+                }
                 //new BallViewInfo taken from parameters of Small
                 drawBall(g2, new BallViewInfo(b.pos(), b.radius()), 1);
             }

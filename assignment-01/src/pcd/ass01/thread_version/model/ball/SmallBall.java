@@ -34,11 +34,11 @@ public class SmallBall extends AbstractBall{
 
     @Override
     protected void onCollisionWith(AbstractBall b) {
-        if(b instanceof PlayerBall)
-            playerTouch();
-        if (b instanceof BotBall)
-            botTouch();
-        if (b instanceof SmallBall)
-            smallBallTouch();
+        switch (b) {
+            case PlayerBall p -> playerTouch();
+            case BotBall bot  -> botTouch();
+            case SmallBall s  -> smallBallTouch();
+            default           -> {}
+        }
     }
 }

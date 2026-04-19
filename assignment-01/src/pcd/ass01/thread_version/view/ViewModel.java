@@ -29,7 +29,7 @@ public class ViewModel {
     public synchronized void update(Board board, int fps) {
         this.balls.clear();
         for (var b : board.getBalls()) {
-            this.balls.add(new SmallBallViewInfo(b.getPos(), b.getRadius(), b.isLastTouchedPlayer(), b.isLastTouchedPlayer()));
+            this.balls.add(new SmallBallViewInfo(b.getPos(), b.getRadius(), b.isLastTouchedPlayer(), b.isLastTouchedBot()));
         }
 
         //player ball
