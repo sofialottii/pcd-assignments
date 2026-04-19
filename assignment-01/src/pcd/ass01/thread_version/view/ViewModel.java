@@ -4,6 +4,14 @@ import pcd.ass01.thread_version.model.board.Board;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class allows model and view to communicate.
+ * In the update() method takes the Board and save all the balls as BallViewInfos.
+ * Then, the getBalls() methods are taken from the ViewFrame (that uses to draw).
+ *
+ * All methods have whe word synchronized because it prevents the graphics from reading the
+ * list of balls at the exact millisecond that the physics is trying to add or remove a ball.
+ */
 public class ViewModel {
 
     private final List<SmallBallViewInfo> balls;

@@ -6,6 +6,12 @@ import pcd.ass01.thread_version.model.util.V2d;
 
 import java.util.Random;
 
+/**
+ * This class contains the bot's movement logic.
+ * In the try construct, it waits a minimum time + random time before making another shot.
+ * In the if construct, the new shot is calculated and then
+ * sent to the controller, which takes care of executing it.
+ */
 public class BotMovements extends Thread {
 
     private final ActiveController controller;

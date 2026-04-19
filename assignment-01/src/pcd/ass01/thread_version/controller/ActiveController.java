@@ -6,6 +6,15 @@ import pcd.ass01.thread_version.view.ViewModel;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * This class is the main Controller of the project. He extends Thread.
+ * Through the while(running) loop, he ensures the game never stops
+ * For a better experience, he calculates how many milliseconds have passed between frames:
+ * if the PC slows down, the dt increases, and the physics "move" the balls further to compensate
+ * (see fps variable).
+ *
+ * He tells the Model to calculate, the ViewModel to update, and the ViewFrame to draw.
+ */
 public class ActiveController extends Thread {
 
     private final Board board;
@@ -43,7 +52,7 @@ public class ActiveController extends Thread {
             //update model
             board.updateState(dt);
 
-            // formula da sistemare??? FPS per la view
+            //FPS per la view
             int fps = (dt > 0) ? (int)(1000 / dt) : 0;
             viewModel.update(board, fps);
 

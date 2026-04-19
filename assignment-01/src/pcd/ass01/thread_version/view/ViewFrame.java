@@ -7,6 +7,12 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * It's the pc window, it extends JFrame. It contains a JPanel. He creates the pixels on the screen.
+ * He works when the GameLoop calls the render() method.
+ * He draws everything. When he's done, he tells the RenderSynch that he can unlock the GameLoop
+ *
+ */
 public class ViewFrame extends JFrame {
 
     private final VisualiserPanel panel;

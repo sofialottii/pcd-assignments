@@ -10,6 +10,12 @@ import pcd.ass01.thread_version.view.ViewModel;
 
 import javax.swing.SwingUtilities;
 
+/**
+ * Main class of the project.
+ * There are 3 possibly configs, and you can choose one of them.
+ *
+ * This class start everything.
+ */
 public class Poool {
 
     public static void main(String[] args) {

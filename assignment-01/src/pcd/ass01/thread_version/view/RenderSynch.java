@@ -1,5 +1,10 @@
 package pcd.ass01.thread_version.view;
 
+/**
+ * This class is a timing system based on the wait() and notifyAll() commands.
+ * It synchronizes the speeds of the threads GameLoop and EDT.
+ * RenderSynch tells GameLoop to wait until graphics are still drawing the previous frame.
+ */
 public class RenderSynch {
 
     private long nextFrameToRender;
