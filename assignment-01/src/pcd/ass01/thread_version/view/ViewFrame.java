@@ -76,6 +76,13 @@ public class ViewFrame extends JFrame {
             g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g2.clearRect(0, 0, getWidth(), getHeight());
 
+
+            if(scoreBoard.isGameOver()){
+                drawGameOverBox(g2);
+            }
+
+
+            //axis
             g2.setColor(Color.LIGHT_GRAY);
             g2.setStroke(new BasicStroke(1));
             g2.drawLine(ox,0,ox,oy*2);
@@ -174,6 +181,63 @@ public class ViewFrame extends JFrame {
 
             //draw the circle
             g2.fillOval(x0 - radiusX, y0 - radiusY, radiusX * 2, radiusY * 2);
+        }
+
+        /**
+         * Screen of end game
+         * @param g2
+         */
+        private void drawGameOverBox(Graphics2D g2) {
+            int boxW = 340;
+            int boxH = 160;
+            int boxX = (getWidth()  - boxW) / 2;
+            int boxY = (getHeight() - boxH) / 2;
+
+            // sfondo semi-trasparente
+            g2.setColor(new Color(0, 0, 0, 180));
+            g2.fillRoundRect(boxX, boxY, boxW, boxH, 20, 20);
+
+            // bordo bianco
+            g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(2));
+            g2.drawRoundRect(boxX, boxY, boxW, boxH, 20, 20);
+
+            // titolo
+            g2.setFont(new Font("Arial", Font.BOLD, 26));
+            String title = "Fine Partita";
+            FontMetrics fm = g2.getFontMetrics();
+            g2.drawString(title, boxX + (boxW - fm.stringWidth(title)) / 2, boxY + 40);
+
+            // punteggio player (blu)
+            g2.setColor(Color.BLUE);
+            g2.setFont(new Font("Arial", Font.BOLD, 18));
+            String playerScore = "Player: " + scoreBoard.getPointPlayer() + " punti";
+            fm = g2.getFontMetrics();
+            g2.drawString(playerScore, boxX + (boxW - fm.stringWidth(playerScore)) / 2, boxY + 80);
+
+            // punteggio bot (rosso)
+            g2.setColor(Color.RED);
+            String botScore = "Bot: " + scoreBoard.getPointBot() + " punti";
+            fm = g2.getFontMetrics();
+            g2.drawString(botScore, boxX + (boxW - fm.stringWidth(botScore)) / 2, boxY + 110);
+
+            // vincitore
+            g2.setColor(Color.YELLOW);
+            g2.setFont(new Font("Arial", Font.BOLD, 20));
+
+
+            //TODO Migliorare
+
+            String winner;
+            if (scoreBoard.isPlayerWin()){
+                winner = "Player ha vinto!";
+            }
+            else {
+                winner = "Bot ha vinto!";
+            }
+
+            fm = g2.getFontMetrics();
+            g2.drawString(winner, boxX + (boxW - fm.stringWidth(winner)) / 2, boxY + 148);
         }
     }
 }
