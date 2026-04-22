@@ -23,8 +23,8 @@ public class Poool {
         Board board = new Board();
         GameState gameState = new GameState();
 
-        //BoardConf config = new MinimalBoardConf();
-        BoardConf config = new LargeBoardConf();
+        BoardConf config = new MinimalBoardConf();
+        //BoardConf config = new LargeBoardConf();
         //BoardConf config = new MassiveBoardConf();
 
         board.init(config, gameState);
@@ -43,6 +43,12 @@ public class Poool {
             view.setFocusable(true);
             view.requestFocusInWindow();
             view.setVisible(true);
+
+            //callback for the endgame
+            gameState.setOnGameOver(() -> {
+                viewModel.setGameOver(gameState.isPlayerWin() ? "Player" : "Bot");
+                controller.stopGame();
+            });
 
             //per fare partire il thread del gameloop
             controller.start();

@@ -19,6 +19,8 @@ public class ViewModel {
     private BallViewInfo playerBall;
     private BallViewInfo botBall;
     private int framePerSec;
+    private boolean gameOver = false;
+    private String winner = "";
 
     public ViewModel() {
         this.balls = new ArrayList<>();
@@ -26,6 +28,19 @@ public class ViewModel {
         this.framePerSec = 0;
     }
 
+
+    public synchronized void setGameOver(String winner) {
+        this.gameOver = true;
+        this.winner = winner;
+    }
+
+    public synchronized boolean isGameOver() {
+        return gameOver;
+    }
+
+    public synchronized String getWinner() {
+        return winner;
+    }
     public synchronized void update(Board board, int fps) {
         this.balls.clear();
         for (var b : board.getBalls()) {

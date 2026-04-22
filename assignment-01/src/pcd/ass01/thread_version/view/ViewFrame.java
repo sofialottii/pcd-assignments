@@ -77,9 +77,6 @@ public class ViewFrame extends JFrame {
             g2.clearRect(0, 0, getWidth(), getHeight());
 
 
-            if(scoreBoard.isGameOver()){
-                drawGameOverBox(g2);
-            }
 
 
             //axis
@@ -149,6 +146,12 @@ public class ViewFrame extends JFrame {
             int botScoreWidth = fm.stringWidth(botScore);
             g2.drawString(botScore, getWidth() - botScoreWidth - 20, getHeight() - 20);
 
+
+            if(model.isGameOver()){
+                g2.clearRect(0, 0, getWidth(), getHeight());
+                drawGameOverBox(g2, model.getWinner());
+            }
+
             //to let gameloop know that view has done
             sync.notifyFrameRendered();
         }
@@ -187,7 +190,7 @@ public class ViewFrame extends JFrame {
          * Screen of end game
          * @param g2
          */
-        private void drawGameOverBox(Graphics2D g2) {
+        private void drawGameOverBox(Graphics2D g2, String winner) {
             int boxW = 340;
             int boxH = 160;
             int boxX = (getWidth()  - boxW) / 2;
@@ -221,23 +224,11 @@ public class ViewFrame extends JFrame {
             fm = g2.getFontMetrics();
             g2.drawString(botScore, boxX + (boxW - fm.stringWidth(botScore)) / 2, boxY + 110);
 
-            // vincitore
             g2.setColor(Color.YELLOW);
             g2.setFont(new Font("Arial", Font.BOLD, 20));
-
-
-            //TODO Migliorare
-
-            String winner;
-            if (scoreBoard.isPlayerWin()){
-                winner = "Player ha vinto!";
-            }
-            else {
-                winner = "Bot ha vinto!";
-            }
-
             fm = g2.getFontMetrics();
-            g2.drawString(winner, boxX + (boxW - fm.stringWidth(winner)) / 2, boxY + 148);
+            String winnerText = winner + " ha vinto!";
+            g2.drawString(winnerText, boxX + (boxW - fm.stringWidth(winnerText)) / 2, boxY + 148);
         }
     }
 }
