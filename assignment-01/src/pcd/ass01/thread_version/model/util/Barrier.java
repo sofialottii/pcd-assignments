@@ -1,27 +1,27 @@
 package pcd.ass01.thread_version.model.util;
 
-import pcd.ass01.thread_version.model.workers.Worker;
-
-import java.util.List;
-
 public class Barrier {
 
-    private final List<Worker> totalWorkers;
+    private final int totalWorkers;
     private int waitingWorkers = 0;
+    private int generation = 0;
 
-    public Barrier(List<Worker> totalWorkers) {
+    public Barrier(int totalWorkers) {
         this.totalWorkers = totalWorkers;
     }
 
     public synchronized void await() throws InterruptedException {
-
+        int actualGeneration = this.generation;
         waitingWorkers++;
 
-        if (waitingWorkers == totalWorkers.size()) {
+        if (waitingWorkers == totalWorkers) {
             waitingWorkers = 0;
+            generation++;
             notifyAll();
+        } else {
+            while (actualGeneration == this.generation) {
+                wait();
+            }
         }
-
     }
-
 }
