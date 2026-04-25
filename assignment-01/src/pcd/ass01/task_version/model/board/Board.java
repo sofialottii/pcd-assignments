@@ -1,13 +1,13 @@
-package pcd.ass01.thread_version.model.board;
+package pcd.ass01.task_version.model.board;
 
 
 
-import pcd.ass01.thread_version.model.GameState;
-import pcd.ass01.thread_version.model.ball.AbstractBall;
-import pcd.ass01.thread_version.model.ball.BotBall;
-import pcd.ass01.thread_version.model.ball.PlayerBall;
-import pcd.ass01.thread_version.model.ball.SmallBall;
-import pcd.ass01.thread_version.model.holes.Hole;
+import pcd.ass01.task_version.model.GameState;
+import pcd.ass01.task_version.model.ball.AbstractBall;
+import pcd.ass01.task_version.model.ball.BotBall;
+import pcd.ass01.task_version.model.ball.PlayerBall;
+import pcd.ass01.task_version.model.ball.SmallBall;
+import pcd.ass01.task_version.model.holes.Hole;
 import pcd.ass01.thread_version.model.workers.Worker;
 
 import java.util.List;
@@ -20,8 +20,6 @@ public class Board {
     private Boundary bounds;
     private List<Hole> holes;
     private GameState gameState;
-    private final int numThreads = Runtime.getRuntime().availableProcessors();;
-    private List<Worker> workers;
     
     public Board(){} 
     
@@ -99,7 +97,7 @@ public class Board {
         return botBall;
     }
     
-    public  Boundary getBounds(){
+    public Boundary getBounds(){
         return bounds;
     }
 
