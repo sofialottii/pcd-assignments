@@ -1,11 +1,9 @@
 package pcd.ass01.thread_version.controller;
 
 import pcd.ass01.thread_version.model.board.Board;
-import pcd.ass01.thread_version.model.workers.Worker;
 import pcd.ass01.thread_version.view.ViewFrame;
 import pcd.ass01.thread_version.view.ViewModel;
 
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
