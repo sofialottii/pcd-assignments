@@ -32,9 +32,8 @@ public class Worker extends Thread{
     @Override
     public void run() {
 
-//        while(true) {
-            System.out.println("entrato!!");
-            for (int i = this.firstIndex; i <= this.lastIndex; i++) {
+        while(true) {
+            for (int i = this.firstIndex; i < this.lastIndex; i++) {
 
                 //resolve collision
                 for (int j = i + 1; j < this.balls.size(); j++) {
@@ -55,11 +54,10 @@ public class Worker extends Thread{
             }
 
             try {
-                System.out.println("ora vado in attesa");
                 barrier.await();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-//        }
+        }
     }
 }

@@ -38,6 +38,8 @@ public class ActiveController extends Thread {
 
         System.out.println("GameController started.");
 
+        board.startWorkers();
+
         while (running) {
             long currentTimestamp = System.currentTimeMillis();
             long dt = currentTimestamp - lastTimestamp;

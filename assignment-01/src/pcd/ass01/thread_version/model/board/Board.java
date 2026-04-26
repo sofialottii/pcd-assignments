@@ -41,6 +41,8 @@ public class Board {
         //create workers
         int chunkSize = this.balls.size() / this.numThreads;
 
+        System.out.println("ball size" + balls.size());
+
         for (int i = 0; i < numThreads; i++) {
             int start = i * chunkSize;
             int end = (i == numThreads - 1) ? this.balls.size() : (i + 1) * chunkSize;
@@ -49,6 +51,12 @@ public class Board {
                     new Worker(start, end-1, this.barrier,
                             this.balls, getBotBall(), getPlayerBall()));
             System.out.println("index da: " + start + " fino a: " + (end-1));
+        }
+    }
+
+    public void startWorkers(){
+        for (Worker worker : workers) {
+            worker.start();
         }
     }
     
@@ -60,10 +68,6 @@ public class Board {
     	for (var b: balls) {
     		b.updateState(dt, this);
     	}
-
-        for (var worker : this.workers) {
-            worker.start();
-        }
 
         try {
             barrier.await();
@@ -88,14 +92,16 @@ public class Board {
 
         //check for balls entering the holes
         for (var h: holes){
-            balls.removeIf(b -> {
+            //balls.removeIf(b -> {
+            for(var b: balls) {
                 if (h.overlaps(b.getPos(), b.getRadius())) {
                     if (b.isLastTouchedPlayer()) gameState.addPointPlayer();
-                    else if (b.isLastTouchedBot())  gameState.addPointBot();
-                    return true;
+                    else if (b.isLastTouchedBot()) gameState.addPointBot();
+                    //return true;
                 }
-                return false;
-            });
+                //return false;
+            }
+            //});
 
             if(h.overlaps(playerBall.getPos(), playerBall.getRadius())){
                 gameState.botWin();
