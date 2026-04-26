@@ -62,7 +62,7 @@ public class Board {
     	}
 
         for (var worker : this.workers) {
-            worker.run();
+            worker.start();
         }
 
         try {

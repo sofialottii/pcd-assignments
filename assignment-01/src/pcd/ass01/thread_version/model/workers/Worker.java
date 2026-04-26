@@ -36,7 +36,6 @@ public class Worker extends Thread{
             System.out.println("entrato!!");
             for (int i = this.firstIndex; i <= this.lastIndex; i++) {
 
-
                 //resolve collision
                 for (int j = i + 1; j < this.balls.size(); j++) {
 
@@ -53,7 +52,6 @@ public class Worker extends Thread{
                 //collision with player and bot ball
                 AbstractBall.resolveCollision(this.balls.get(i), playerBall);
                 AbstractBall.resolveCollision(this.balls.get(i), botBall);
-
             }
 
             try {
