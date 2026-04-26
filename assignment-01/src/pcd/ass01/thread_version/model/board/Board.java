@@ -25,6 +25,7 @@ public class Board {
     private int numThreads;;
     private final List<Worker> workers = new ArrayList<>();
     private Barrier barrier;
+    private int ballsInHole = 0;
     
     public Board(){} 
     
@@ -92,16 +93,16 @@ public class Board {
 
         //check for balls entering the holes
         for (var h: holes){
-            //balls.removeIf(b -> {
             for(var b: balls) {
-                if (h.overlaps(b.getPos(), b.getRadius())) {
-                    if (b.isLastTouchedPlayer()) gameState.addPointPlayer();
-                    else if (b.isLastTouchedBot()) gameState.addPointBot();
-                    //return true;
+                if(!b.isInHole()) {
+                    if (h.overlaps(b.getPos(), b.getRadius())) {
+                        b.setInHole();
+                        ballsInHole++;
+                        if (b.isLastTouchedPlayer()) gameState.addPointPlayer();
+                        else if (b.isLastTouchedBot()) gameState.addPointBot();
+                    }
                 }
-                //return false;
             }
-            //});
 
             if(h.overlaps(playerBall.getPos(), playerBall.getRadius())){
                 gameState.botWin();
@@ -110,15 +111,12 @@ public class Board {
                 gameState.playerWin();
             }
         }
-        if (balls.isEmpty()){
+        if (ballsInHole == balls.size()){
             if (gameState.getPointPlayer()>gameState.getPointBot())
                 gameState.playerWin();
             else
                 gameState.botWin();
         }
-
-
-
     	   	    	
     }
     
@@ -140,5 +138,9 @@ public class Board {
 
     public List<Hole> getHoles(){
         return holes;
+    }
+
+    public int getBallsInHole(){
+        return ballsInHole;
     }
 }

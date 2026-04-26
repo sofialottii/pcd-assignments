@@ -30,7 +30,7 @@ public class BotMovements extends Thread {
         while(running) {
 
             try {
-                Thread.sleep(500 + random.nextInt(1000));
+                Thread.sleep(5000000 + random.nextInt(1000));
             } catch (InterruptedException e) {
                 running = false;
             }

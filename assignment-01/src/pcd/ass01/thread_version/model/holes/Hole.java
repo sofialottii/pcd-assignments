@@ -29,6 +29,6 @@ public class Hole {
         double dx = this.position.x() - pos.x();
         double dy = this.position.y() - pos.y();
         double dist = Math.hypot(dx, dy);
-        return dist < this.radius + radius;
+        return dist < (this.radius - radius * 0.5);
     }
 }
