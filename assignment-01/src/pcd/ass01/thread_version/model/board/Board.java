@@ -22,7 +22,7 @@ public class Board {
     private Boundary bounds;
     private List<Hole> holes;
     private GameState gameState;
-    private final int numThreads = Runtime.getRuntime().availableProcessors();;
+    private int numThreads;;
     private final List<Worker> workers = new ArrayList<>();
     private Barrier barrier;
     
@@ -35,6 +35,7 @@ public class Board {
     	this.bounds = conf.getBoardBoundary();
         this.holes = conf.getHoles();
         this.gameState = gameState;
+        this.numThreads = Math.min(this.balls.size(), Runtime.getRuntime().availableProcessors());
         this.barrier = new Barrier(numThreads + 1);
 
         //create workers
@@ -81,6 +82,7 @@ public class Board {
     		AbstractBall.resolveCollision(b, playerBall);
             AbstractBall.resolveCollision(b, botBall);
     	}*/
+
         //collision player-bot
         AbstractBall.resolveCollision(playerBall, botBall);
 

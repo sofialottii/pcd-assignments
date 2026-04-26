@@ -19,9 +19,11 @@ public class Barrier {
             generation++;
             notifyAll();
         } else {
-            while (actualGeneration == this.generation) {
-                wait();
-            }
+//            while (actualGeneration == this.generation) {
+//                System.out.println("anche qui entro");
+//                wait();
+//                System.out.println("miam mio miao");
+//            }
         }
     }
 }
