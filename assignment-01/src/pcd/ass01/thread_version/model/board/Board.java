@@ -8,8 +8,10 @@ import pcd.ass01.thread_version.model.ball.BotBall;
 import pcd.ass01.thread_version.model.ball.PlayerBall;
 import pcd.ass01.thread_version.model.ball.SmallBall;
 import pcd.ass01.thread_version.model.holes.Hole;
+import pcd.ass01.thread_version.model.util.Barrier;
 import pcd.ass01.thread_version.model.workers.Worker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
@@ -21,7 +23,8 @@ public class Board {
     private List<Hole> holes;
     private GameState gameState;
     private final int numThreads = Runtime.getRuntime().availableProcessors();;
-    private List<Worker> workers;
+    private final List<Worker> workers = new ArrayList<>();
+    private Barrier barrier;
     
     public Board(){} 
     
@@ -32,6 +35,20 @@ public class Board {
     	this.bounds = conf.getBoardBoundary();
         this.holes = conf.getHoles();
         this.gameState = gameState;
+        this.barrier = new Barrier(numThreads + 1);
+
+        //create workers
+        int chunkSize = this.balls.size() / this.numThreads;
+
+        for (int i = 0; i < numThreads; i++) {
+            int start = i * chunkSize;
+            int end = (i == numThreads - 1) ? this.balls.size() : (i + 1) * chunkSize;
+
+            this.workers.add(
+                    new Worker(start, end-1, this.barrier,
+                            this.balls, getBotBall(), getPlayerBall()));
+            System.out.println("index da: " + start + " fino a: " + (end-1));
+        }
     }
     
     public void updateState(long dt) {
@@ -41,19 +58,29 @@ public class Board {
 
     	for (var b: balls) {
     		b.updateState(dt, this);
-    	}       	
+    	}
+
+        for (var worker : this.workers) {
+            worker.run();
+        }
+
+        try {
+            barrier.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         //collision ball-ball
-    	for (int i = 0; i < balls.size() - 1; i++) {
+    	/*for (int i = 0; i < balls.size() - 1; i++) {
             for (int j = i + 1; j < balls.size(); j++) {
                 AbstractBall.resolveCollision(balls.get(i), balls.get(j));
             }
-        }
+        }*/
         //collision ball-player / ball-bot
-    	for (var b: balls) {
+    	/*for (var b: balls) {
     		AbstractBall.resolveCollision(b, playerBall);
             AbstractBall.resolveCollision(b, botBall);
-    	}
+    	}*/
         //collision player-bot
         AbstractBall.resolveCollision(playerBall, botBall);
 

@@ -54,6 +54,7 @@ public class Board {
     	}
         //collision player-bot
         AbstractBall.resolveCollision(playerBall, botBall);
+        AbstractBall.resolveCollision(botBall, playerBall);
 
         //check for balls entering the holes
         for (var h: holes){
