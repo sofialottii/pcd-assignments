@@ -76,18 +76,6 @@ public class Board {
             e.printStackTrace();
         }
 
-        //collision ball-ball
-    	/*for (int i = 0; i < balls.size() - 1; i++) {
-            for (int j = i + 1; j < balls.size(); j++) {
-                AbstractBall.resolveCollision(balls.get(i), balls.get(j));
-            }
-        }*/
-        //collision ball-player / ball-bot
-    	/*for (var b: balls) {
-    		AbstractBall.resolveCollision(b, playerBall);
-            AbstractBall.resolveCollision(b, botBall);
-    	}*/
-
         //collision player-bot
         AbstractBall.resolveCollision(playerBall, botBall);
 

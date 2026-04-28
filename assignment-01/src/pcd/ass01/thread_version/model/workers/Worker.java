@@ -43,15 +43,25 @@ public class Worker extends Thread{
                         if(!b2.isInHole()) {
                             synchronized (b1) {
                                 synchronized (b2) {
-                                    AbstractBall.resolveCollision(this.balls.get(j), this.balls.get(i));
+                                    AbstractBall.resolveCollision(b1, b2);
                                 }
                             }
                         }
                     }
 
                     //collision with player and bot ball
-                    AbstractBall.resolveCollision(this.balls.get(i), playerBall);
-                    AbstractBall.resolveCollision(this.balls.get(i), botBall);
+                    synchronized (b1) {
+                        synchronized (playerBall) {
+                            AbstractBall.resolveCollision(b1, playerBall);
+                        }
+                    }
+
+                    synchronized (b1) {
+                        synchronized (botBall) {
+                            AbstractBall.resolveCollision(b1, botBall);
+                        }
+                    }
+
                 }
             }
 
