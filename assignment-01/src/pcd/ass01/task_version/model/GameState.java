@@ -30,9 +30,7 @@ public class GameState {
     public void addPointBot()    { this.pointBot++; }
     public void addPointPlayer() { this.pointPlayer++; }
 
-    public boolean isGameOver()  { return this.gameOver; }
     public boolean isPlayerWin() { return this.playerWin; }
-    public boolean isBotWin()    { return this.botWin; }
 
     public void playerWin() {
         if (gameOverFired.compareAndSet(false, true)) {

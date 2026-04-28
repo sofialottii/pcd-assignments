@@ -56,10 +56,9 @@ public class Board {
 
         for (int i = 0; i < numThreads; i++) {
             int start = i * chunkSize;
-            int end = (i + 1) * chunkSize;
-            //int end = (i == numThreads - 1) ? this.balls.size() : (i + 1) * chunkSize;
+            int end = (i == numThreads - 1) ? this.balls.size() : (i + 1) * chunkSize;
 
-            Future<?> res = executor.submit(new CollisionTask(start, end, balls, botBall, playerBall));
+            Future<?> res = executor.submit(new CollisionTask(start, end-1, balls, botBall, playerBall));
 
             results.add(res);
 
@@ -72,19 +71,6 @@ public class Board {
                 throw new RuntimeException(e);
             }
         }
-
-        //collision ball-ball
-    	/*for (int i = 0; i < balls.size() - 1; i++) {
-            for (int j = i + 1; j < balls.size(); j++) {
-                AbstractBall.resolveCollision(balls.get(i), balls.get(j));
-            }
-        }*/
-        //collision ball-player / ball-bot
-    	/*for (var b: balls) {
-    		AbstractBall.resolveCollision(b, playerBall);
-            AbstractBall.resolveCollision(b, botBall);
-    	}*/
-
         //collision player-bot
         AbstractBall.resolveCollision(playerBall, botBall);
         AbstractBall.resolveCollision(botBall, playerBall);
@@ -114,14 +100,17 @@ public class Board {
                 gameState.botWin();
         }
 
-        executor.shutdown();
-        executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-
-
-
+      //  executor.shutdown();
+      //  executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 
     }
-    
+
+    public void shutdownExec(){
+        if(this.executor != null) {
+            this.executor.shutdown();
+        }
+    }
+
     public List<SmallBall> getBalls(){
     	return balls;
     }
