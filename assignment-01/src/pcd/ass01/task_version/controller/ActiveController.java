@@ -1,8 +1,8 @@
 package pcd.ass01.task_version.controller;
 
-import pcd.ass01.thread_version.model.board.Board;
-import pcd.ass01.thread_version.view.ViewFrame;
-import pcd.ass01.thread_version.view.ViewModel;
+import pcd.ass01.task_version.model.board.Board;
+import pcd.ass01.task_version.view.ViewFrame;
+import pcd.ass01.task_version.view.ViewModel;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -50,7 +50,11 @@ public class ActiveController extends Thread {
             }
 
             //update model
-            board.updateState(dt);
+            try {
+                board.updateState(dt);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             //FPS per la view
             int fps = (dt > 0) ? (int)(1000 / dt) : 0;

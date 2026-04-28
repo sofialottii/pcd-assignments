@@ -1,14 +1,15 @@
 package pcd.ass01.task_version;
 
 
-import pcd.ass01.thread_version.controller.ActiveController;
-import pcd.ass01.thread_version.controller.BotMovements;
-import pcd.ass01.thread_version.model.GameState;
-import pcd.ass01.thread_version.model.board.Board;
-import pcd.ass01.thread_version.model.board.BoardConf;
-import pcd.ass01.thread_version.model.board.MinimalBoardConf;
-import pcd.ass01.thread_version.view.ViewFrame;
-import pcd.ass01.thread_version.view.ViewModel;
+import pcd.ass01.task_version.controller.ActiveController;
+import pcd.ass01.task_version.controller.BotMovements;
+import pcd.ass01.task_version.model.GameState;
+import pcd.ass01.task_version.model.board.Board;
+import pcd.ass01.task_version.model.board.BoardConf;
+import pcd.ass01.task_version.model.board.LargeBoardConf;
+import pcd.ass01.task_version.model.board.MinimalBoardConf;
+import pcd.ass01.task_version.view.ViewFrame;
+import pcd.ass01.task_version.view.ViewModel;
 
 import javax.swing.*;
 
@@ -25,8 +26,8 @@ public class Poool {
         Board board = new Board();
         GameState gameState = new GameState();
 
-        BoardConf config = new MinimalBoardConf();
-        //BoardConf config = new LargeBoardConf();
+        //BoardConf config = new MinimalBoardConf();
+        BoardConf config = new LargeBoardConf();
         //BoardConf config = new MassiveBoardConf();
 
         board.init(config, gameState);

@@ -22,7 +22,6 @@ public class Board {
     private Boundary bounds;
     private List<Hole> holes;
     private GameState gameState;
-    private int numThreads;;
     private final List<Worker> workers = new ArrayList<>();
     private Barrier barrier;
     private int ballsInHole = 0;
@@ -36,13 +35,11 @@ public class Board {
     	this.bounds = conf.getBoardBoundary();
         this.holes = conf.getHoles();
         this.gameState = gameState;
-        this.numThreads = Math.min(this.balls.size(), Runtime.getRuntime().availableProcessors());
+        int numThreads = Math.min(this.balls.size(), Runtime.getRuntime().availableProcessors());
         this.barrier = new Barrier(numThreads + 1);
 
         //create workers
-        int chunkSize = this.balls.size() / this.numThreads;
-
-        System.out.println("ball size" + balls.size());
+        int chunkSize = this.balls.size() / numThreads;
 
         for (int i = 0; i < numThreads; i++) {
             int start = i * chunkSize;
@@ -51,7 +48,6 @@ public class Board {
             this.workers.add(
                     new Worker(start, end-1, this.barrier,
                             this.balls, getBotBall(), getPlayerBall()));
-            System.out.println("index da: " + start + " fino a: " + (end-1));
         }
     }
 
@@ -99,11 +95,12 @@ public class Board {
                 gameState.playerWin();
             }
         }
-        if (ballsInHole == balls.size()){
-            if (gameState.getPointPlayer()>gameState.getPointBot())
-                gameState.playerWin();
-            else
-                gameState.botWin();
+        if (this.ballsInHole == this.balls.size()){
+            if (this.gameState.getPointPlayer() > this.gameState.getPointBot()) {
+                this.gameState.playerWin();
+            } else {
+                this.gameState.botWin();
+            }
         }
     	   	    	
     }
@@ -120,7 +117,7 @@ public class Board {
         return botBall;
     }
     
-    public  Boundary getBounds(){
+    public Boundary getBounds(){
         return bounds;
     }
 

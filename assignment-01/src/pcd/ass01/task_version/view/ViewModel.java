@@ -1,6 +1,6 @@
 package pcd.ass01.task_version.view;
 
-import pcd.ass01.thread_version.model.board.Board;
+import pcd.ass01.task_version.model.board.Board;
 
 import java.util.ArrayList;
 import java.util.List;

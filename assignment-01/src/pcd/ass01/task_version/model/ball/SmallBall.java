@@ -6,6 +6,7 @@ import pcd.ass01.task_version.model.util.V2d;
 public class SmallBall extends AbstractBall {
     private boolean lastTouchedPlayer;
     private boolean lastTouchedBot;
+    private boolean inHole = false;
 
     public SmallBall(P2d pos, double radius, double mass, V2d vel) {
         super(pos, radius, mass, vel);
@@ -31,6 +32,10 @@ public class SmallBall extends AbstractBall {
         lastTouchedPlayer = false;
         lastTouchedBot = false;
     }
+
+    public boolean isInHole(){ return inHole; }
+
+    public void setInHole(){ inHole = true; }
 
     @Override
     protected void onCollisionWith(AbstractBall b) {

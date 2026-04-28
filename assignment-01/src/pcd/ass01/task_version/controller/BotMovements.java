@@ -1,7 +1,7 @@
 package pcd.ass01.task_version.controller;
 
-import pcd.ass01.thread_version.model.board.Board;
-import pcd.ass01.thread_version.model.util.V2d;
+import pcd.ass01.task_version.model.board.Board;
+import pcd.ass01.task_version.model.util.V2d;
 
 
 import java.util.Random;

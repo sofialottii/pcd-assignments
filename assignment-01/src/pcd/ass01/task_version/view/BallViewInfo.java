@@ -1,6 +1,6 @@
 package pcd.ass01.task_version.view;
 
-import pcd.ass01.thread_version.model.util.P2d;
+import pcd.ass01.task_version.model.util.P2d;
 
 /**
  * It's a data container (a record). It stores only the information that

@@ -1,7 +1,7 @@
 package pcd.ass01.task_version.controller;
 
 
-import pcd.ass01.thread_version.model.board.Board;
+import pcd.ass01.task_version.model.board.Board;
 
 /**
  * interface that contains the execute method. The commands will modify the Board.

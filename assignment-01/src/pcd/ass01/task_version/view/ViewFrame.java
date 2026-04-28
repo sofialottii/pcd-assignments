@@ -1,6 +1,6 @@
 package pcd.ass01.task_version.view;
 
-import pcd.ass01.thread_version.model.GameState;
+import pcd.ass01.task_version.model.GameState;
 
 import javax.swing.*;
 import java.awt.*;

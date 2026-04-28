@@ -38,7 +38,7 @@ public class GameState {
         if (gameOverFired.compareAndSet(false, true)) {
             this.gameOver  = true;
             this.playerWin = true;
-            if (onGameOver != null) onGameOver.run();
+            if (this.onGameOver != null) this.onGameOver.run();
         }
     }
 
@@ -46,7 +46,7 @@ public class GameState {
         if (gameOverFired.compareAndSet(false, true)) {
             this.gameOver = true;
             this.botWin   = true;
-            if (onGameOver != null) onGameOver.run();
+            if (this.onGameOver != null) this.onGameOver.run();
         }
     }
 }

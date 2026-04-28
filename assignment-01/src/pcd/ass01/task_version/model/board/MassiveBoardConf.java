@@ -1,7 +1,5 @@
 package pcd.ass01.task_version.model.board;
 
-
-
 import pcd.ass01.task_version.model.ball.BotBall;
 import pcd.ass01.task_version.model.ball.PlayerBall;
 import pcd.ass01.task_version.model.ball.SmallBall;
@@ -14,9 +12,9 @@ import java.util.List;
 
 public class MassiveBoardConf implements BoardConf {
 
-	private static final double X0 = -1.4;
+	private static final double X0 = -1.32;
 	private static final double Y0 = -1.0;
-	private static final double X1 = 1.4;
+	private static final double X1 = 1.32;
 	private static final double Y1 = 1.0;
 	@Override
 	public PlayerBall getPlayerBall() {

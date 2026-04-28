@@ -8,9 +8,11 @@ import pcd.ass01.task_version.model.ball.BotBall;
 import pcd.ass01.task_version.model.ball.PlayerBall;
 import pcd.ass01.task_version.model.ball.SmallBall;
 import pcd.ass01.task_version.model.holes.Hole;
-import pcd.ass01.thread_version.model.workers.Worker;
+import pcd.ass01.task_version.model.tasks.CollisionTask;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.*;
 
 public class Board {
 
@@ -20,6 +22,11 @@ public class Board {
     private Boundary bounds;
     private List<Hole> holes;
     private GameState gameState;
+    private int numThreads;
+    private int ballsInHole = 0;
+    private int chunkSize;
+
+    private ExecutorService executor;
     
     public Board(){} 
     
@@ -30,28 +37,54 @@ public class Board {
     	this.bounds = conf.getBoardBoundary();
         this.holes = conf.getHoles();
         this.gameState = gameState;
+        this.numThreads = Math.min(this.balls.size(), Runtime.getRuntime().availableProcessors());
+
+        this.executor = Executors.newFixedThreadPool(numThreads);
+        this.chunkSize = this.balls.size() / numThreads;
     }
     
-    public void updateState(long dt) {
+    public void updateState(long dt) throws InterruptedException {
 
     	playerBall.updateState(dt, this);
     	botBall.updateState(dt, this);
 
     	for (var b: balls) {
     		b.updateState(dt, this);
-    	}       	
+    	}
+
+        List<Future<?>> results = new LinkedList<Future<?>>();
+
+        for (int i = 0; i < numThreads; i++) {
+            int start = i * chunkSize;
+            int end = (i + 1) * chunkSize;
+            //int end = (i == numThreads - 1) ? this.balls.size() : (i + 1) * chunkSize;
+
+            Future<?> res = executor.submit(new CollisionTask(start, end, balls, botBall, playerBall));
+
+            results.add(res);
+
+        }
+
+        for (Future<?> res : results) {
+            try {
+                res.get();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         //collision ball-ball
-    	for (int i = 0; i < balls.size() - 1; i++) {
+    	/*for (int i = 0; i < balls.size() - 1; i++) {
             for (int j = i + 1; j < balls.size(); j++) {
                 AbstractBall.resolveCollision(balls.get(i), balls.get(j));
             }
-        }
+        }*/
         //collision ball-player / ball-bot
-    	for (var b: balls) {
+    	/*for (var b: balls) {
     		AbstractBall.resolveCollision(b, playerBall);
             AbstractBall.resolveCollision(b, botBall);
-    	}
+    	}*/
+
         //collision player-bot
         AbstractBall.resolveCollision(playerBall, botBall);
         AbstractBall.resolveCollision(botBall, playerBall);
@@ -81,9 +114,12 @@ public class Board {
                 gameState.botWin();
         }
 
+        executor.shutdown();
+        executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 
 
-    	   	    	
+
+
     }
     
     public List<SmallBall> getBalls(){
@@ -104,5 +140,9 @@ public class Board {
 
     public List<Hole> getHoles(){
         return holes;
+    }
+
+    public int getBallsInHole(){
+        return ballsInHole;
     }
 }
