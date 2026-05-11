@@ -22,6 +22,7 @@ public class ViewModel {
     private int framePerSec;
     private boolean gameOver = false;
     private String winner = "";
+    private int ballsInHole;
 
     public ViewModel() {
         this.balls = new ArrayList<>();
@@ -45,7 +46,7 @@ public class ViewModel {
     public synchronized void update(Board board, int fps) {
         this.balls.clear();
         for (var b : board.getBalls()) {
-            this.balls.add(new SmallBallViewInfo(b.getPos(), b.getRadius(), b.isLastTouchedPlayer(), b.isLastTouchedBot()));
+            this.balls.add(new SmallBallViewInfo(b.getPos(), b.getRadius(), b.isLastTouchedPlayer(), b.isLastTouchedBot(), b.isInHole()));
         }
 
         //player ball
@@ -61,6 +62,8 @@ public class ViewModel {
             this.holes.add(new BallViewInfo(h.getPosition(), h.getRadius()));
         }
 
+        ballsInHole = board.getBallsInHole();
+
         this.framePerSec = fps;
     }
 
@@ -71,6 +74,8 @@ public class ViewModel {
     public synchronized BallViewInfo getPlayerBall() {
         return playerBall;
     }
+
+    public synchronized int getBallsInHole() { return ballsInHole; }
 
     public synchronized BallViewInfo getBotBall() {
         return botBall;

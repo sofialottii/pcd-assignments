@@ -94,16 +94,19 @@ public class ViewFrame extends JFrame {
 
             //small balls
 
+
             for (var b : model.getBalls()) {
-                if (b.isPlayerTouch()) {
-                    g2.setColor(Color.BLUE);
-                } else if (b.isBotTouch()) {
-                    g2.setColor(Color.RED);
-                } else {
-                    g2.setColor(Color.BLACK);
+                if (!b.isInHole()) {
+                    if (b.isPlayerTouch()) {
+                        g2.setColor(Color.BLUE);
+                    } else if (b.isBotTouch()) {
+                        g2.setColor(Color.RED);
+                    } else {
+                        g2.setColor(Color.BLACK);
+                    }
+                    //new BallViewInfo taken from parameters of Small
+                    drawBall(g2, new BallViewInfo(b.pos(), b.radius()), 1);
                 }
-                //new BallViewInfo taken from parameters of Small
-                drawBall(g2, new BallViewInfo(b.pos(), b.radius()), 1);
             }
 
             //player ball
@@ -129,7 +132,7 @@ public class ViewFrame extends JFrame {
             g2.setFont(new Font("Arial", Font.PLAIN, 14));
             FontMetrics fm = g2.getFontMetrics();
 
-            String ballsText = "Palle in gioco: " + model.getBalls().size();
+            String ballsText = "Palle in gioco: " + (model.getBalls().size() - model.getBallsInHole());
             String fpsText   = "FPS: " + model.getFramePerSec();
 
             g2.drawString(ballsText, (getWidth() - fm.stringWidth(ballsText)) / 2, 40);

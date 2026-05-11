@@ -44,6 +44,7 @@ public class ViewFrame extends JFrame {
     /**
      * asking the sync which frame we are about to draw, making Swing redraw
      * the panel and waiting for the drawing to be finished
+     * it delegates to EDT (per questo motivo è possibile richiamarlo nel controller)
      */
     public void render() {
         long nf = sync.nextFrameToRender();
