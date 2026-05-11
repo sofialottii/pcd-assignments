@@ -69,6 +69,7 @@ public class ActiveController extends Thread {
                 running = false;
             }
         }
+        board.shutdownExec();
     }
 
     /**

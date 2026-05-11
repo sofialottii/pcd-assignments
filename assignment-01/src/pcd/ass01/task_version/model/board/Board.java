@@ -73,18 +73,19 @@ public class Board {
         }
         //collision player-bot
         AbstractBall.resolveCollision(playerBall, botBall);
-        AbstractBall.resolveCollision(botBall, playerBall);
 
         //check for balls entering the holes
         for (var h: holes){
-            balls.removeIf(b -> {
-                if (h.overlaps(b.getPos(), b.getRadius())) {
-                    if (b.isLastTouchedPlayer()) gameState.addPointPlayer();
-                    else if (b.isLastTouchedBot())  gameState.addPointBot();
-                    return true;
+            for(var b: balls) {
+                if(!b.isInHole()) {
+                    if (h.overlaps(b.getPos(), b.getRadius())) {
+                        b.setInHole();
+                        ballsInHole++;
+                        if (b.isLastTouchedPlayer()) gameState.addPointPlayer();
+                        else if (b.isLastTouchedBot()) gameState.addPointBot();
+                    }
                 }
-                return false;
-            });
+            }
 
             if(h.overlaps(playerBall.getPos(), playerBall.getRadius())){
                 gameState.botWin();
@@ -93,11 +94,12 @@ public class Board {
                 gameState.playerWin();
             }
         }
-        if (balls.isEmpty()){
-            if (gameState.getPointPlayer()>gameState.getPointBot())
-                gameState.playerWin();
-            else
-                gameState.botWin();
+        if (this.ballsInHole == this.balls.size()){
+            if (this.gameState.getPointPlayer() > this.gameState.getPointBot()) {
+                this.gameState.playerWin();
+            } else {
+                this.gameState.botWin();
+            }
         }
 
       //  executor.shutdown();
@@ -106,7 +108,7 @@ public class Board {
     }
 
     public void shutdownExec(){
-        if(this.executor != null) {
+        if (this.executor != null && !this.executor.isShutdown()) {
             this.executor.shutdown();
         }
     }
