@@ -1,4 +1,6 @@
-# Assignment #01 - Poool Game
+# ASSIGNMENTS
+
+## Assignment #01 - Poool Game
 
 The game consists in a bidimensional board with a number of small balls and two bigger balls, representing a human player ball and a bot (i.e. computer controlled) ball.
 
@@ -12,3 +14,10 @@ The `assignment-01` folder in the repo includes:
 * `ass01` folder, which includes the game in two different versions:
   1. `thread_version` based on Java multithreaded programming, using only default/platform threads
   2. `task_version` applying Task-based approach, using Java Executor Framework, where useful
+
+
+## Assignment #02 - FSStat
+
+## Assignment #03
+
+## Assignment #04
