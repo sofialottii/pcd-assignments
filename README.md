@@ -1,7 +1,4 @@
-# ASSIGNMENTS
-assignments for the Concurrent and Distributed Programming course
-
-## Assignment #01 - Poool Game
+# Assignment #01 - Poool Game
 
 The game consists in a bidimensional board with a number of small balls and two bigger balls, representing a human player ball and a bot (i.e. computer controlled) ball.
 
