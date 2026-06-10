@@ -4,6 +4,7 @@ import io.reactivex.rxjava3.core.*;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 public class FSStatLibReactive {
 
@@ -17,7 +18,6 @@ public class FSStatLibReactive {
                         recursiveFileSearch(emitter, child.getAbsolutePath());
                     }else{
                         emitter.onNext(child.length());
-                        Thread.sleep(5);
                     }
                 }
             } else {
@@ -26,12 +26,18 @@ public class FSStatLibReactive {
                 // to avoid race conditions with another process that deletes
                 // directories.
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("esco");
+        }
     }
 
     private static Flowable<Long> getColdStream(String dirPath){
         Flowable<Long> source = Flowable.create(emitter -> {
-            recursiveFileSearch(emitter, dirPath);
+            new Thread(() -> {
+                recursiveFileSearch(emitter, dirPath);
+                emitter.onComplete();
+            }).start();
         }, BackpressureStrategy.BUFFER);
 
         return source;
@@ -45,10 +51,15 @@ public class FSStatLibReactive {
 
         source.onBackpressureBuffer(5_000, () -> {
             System.out.println("HELP!");
-        }).observeOn(Schedulers.computation()).subscribe(size -> {
-            report.addFile(size);
-        });
+        }).subscribeOn(Schedulers.computation())
+                .blockingSubscribe(size -> {
+                            report.addFile(size);
+                        },
+                        error -> {
+                            System.err.println("Errore nel flusso: " + error.getMessage());
 
+                        }
+                );
         return report;
     }
 }
