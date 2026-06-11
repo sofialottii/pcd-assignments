@@ -4,6 +4,7 @@ package pcd.FSStat.eventLoop;
 import io.vertx.core.Future;
 import io.vertx.core.VerticleBase;
 import io.vertx.core.file.FileSystem;
+import pcd.FSStat.common.Report;
 
 
 public class FSStatEventLoop extends VerticleBase {
@@ -33,9 +34,5 @@ public class FSStatEventLoop extends VerticleBase {
         });
 
         return super.start();
-    }
-
-    public Future<?> stop() throws Exception {
-        return super.stop();
     }
 }

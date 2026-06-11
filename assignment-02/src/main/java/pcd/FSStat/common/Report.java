@@ -1,27 +1,21 @@
-package pcd.FSStat.reactiveRx;
+package pcd.FSStat.common;
 
-import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class Report {
 
-    private static long OUT_OF_RANGE = Long.MAX_VALUE;
+    private static final long OUT_OF_RANGE = Long.MAX_VALUE;
 
     private int totalFiles;
-    private final long maxFS;
-    private final int nb;
-    private final long chunkSize;
-    private NavigableMap<Long, Integer> bands = new TreeMap<>();
+    private final NavigableMap<Long, Integer> bands = new TreeMap<>();
 
     public Report(long maxFS, int nb) {
         this.totalFiles = 0;
-        this.maxFS = maxFS;
-        this.nb = nb;
-        this.chunkSize = maxFS / nb;
+        long chunkSize = maxFS / nb;
 
-        for (int i = 0; i < this.nb; i++) {
-            long endInterval = (i == nb - 1) ? this.maxFS : (i + 1) * this.chunkSize;
+        for (int i = 0; i < nb; i++) {
+            long endInterval = (i == nb - 1) ? maxFS : (i + 1) * chunkSize;
             this.bands.put(endInterval, 0);
         }
 
@@ -30,10 +24,10 @@ public class Report {
     }
 
     public void addFile(long size) {
-        //aumentiamo il numero di file visti
+        //increase the number of files viewed
         this.totalFiles++;
 
-        //aggiungiamo il file alla corrispondente fascia
+        //add the file to the corresponding band
         Long cell = this.bands.ceilingKey(size);
 
         if (cell != null) {
@@ -41,14 +35,6 @@ public class Report {
         } else {
             this.bands.put(OUT_OF_RANGE, this.bands.get(OUT_OF_RANGE)+1);
         }
-    }
-
-    public int getTotalFiles() {
-        return this.totalFiles;
-    }
-
-    public Map<Long, Integer> getBands() {
-        return this.bands;
     }
 
     @Override

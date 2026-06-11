@@ -6,6 +6,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.file.FileSystem;
 import java.util.ArrayList;
 import java.util.List;
+import pcd.FSStat.common.Report;
 
 
 public class FSStatLib {
@@ -17,12 +18,12 @@ public class FSStatLib {
     }
 
     /**
-     * Funzione d'appoggio ricorsiva, non ritorna nulla se non un segnale
-     * per informare la funzione principale che l'operazione abbia avuto successo o meno.
-     * Nel frattempo popola l'oggetto report
-     * @param dir
-     * @param report
-     * @return
+     * Recursive helper function, returns a signal to inform the main function
+     * whether the operation was successful or not. Meanwhile, it populates
+     * the report object.
+     *
+     * @param dir the actual directory
+     * @param report the updated report
      */
     private Future<Void> getFSRecursiveReport(String dir, Report report){
         Promise<Void> promise = Promise.promise();

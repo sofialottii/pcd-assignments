@@ -1,6 +1,7 @@
 package pcd.FSStat.reactiveRx;
 
 import io.reactivex.rxjava3.core.*;
+import pcd.FSStat.common.Report;
 
 import java.io.File;
 
@@ -35,7 +36,7 @@ public class FSStatLibReactive {
 
     /**
      * Prepares a cold Stream using a Flowable
-     * @param dirPath
+     * @param dirPath the path
      * @return a Flowable which contains the size of the files
      */
     private static Flowable<Long> getColdStream(String dirPath) {
@@ -51,9 +52,9 @@ public class FSStatLibReactive {
 
     /**
      * Create a report by collecting data from the stream
-     * @param dir
-     * @param maxFS
-     * @param nb
+     * @param dir directory
+     * @param maxFS max value of the file size range [0, maxFS]
+     * @param nb number of file size bands
      * @return report completed
      */
     public Report getFSReport(String dir, long maxFS, int nb) {
