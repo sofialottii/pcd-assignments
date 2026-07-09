@@ -8,23 +8,28 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class FSStatLibVT {
 
-    public Report getFSReport(String dir, long maxFS, int nb) {
+    private final ReentrantLock lock = new ReentrantLock();
+
+    public Future<Report> getFSReport(String dir, long maxFS, int nb) {
 
         Report report = new Report(maxFS, nb);
 
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+        ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+
+        return executor.submit(() -> {
             try {
                 recursiveFileSearch(dir, report, executor);
             } finally {
                 executor.shutdown();
             }
+            return report;
+        });
 
-        }
 
-        return report;
     }
 
     private void recursiveFileSearch(String dirPath, Report report, ExecutorService executor) {
@@ -44,11 +49,16 @@ public class FSStatLibVT {
                 }
 
                 else if (child.isFile()) {
-                    report.addFile(child.length());
+                    lock.lock();
+                    try {
+                        report.addFile(child.length());
+                    } finally {
+                        lock.unlock();
+                    }
                 }
             }
         } else {
-            throw new RuntimeException();
+            System.err.println("Impossible to read: " + dirPath);
         }
 
         for (Future<?> task : futures) {
