@@ -3,8 +3,6 @@ package pcd.FSStat.gui;
 import io.vertx.core.Vertx;
 import pcd.FSStat.common.Report;
 import pcd.FSStat.eventLoop.FSStatEventLoop;
-import pcd.FSStat.eventLoop.FSStatEventLoopInteractive;
-import pcd.FSStat.eventLoop.FSStatLibInteractive;
 import pcd.FSStat.reactiveRx.FSStatLibReactiveInteractive;
 import pcd.FSStat.virtualThreads.FSStatLibVTInteractive;
 
@@ -14,8 +12,6 @@ import java.awt.*;
 import java.io.File;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.TreeMap;
-import java.util.Random;
 
 public class FSStatTestGUI extends JFrame {
 
