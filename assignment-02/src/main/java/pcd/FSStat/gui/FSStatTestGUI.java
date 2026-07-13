@@ -2,7 +2,7 @@ package pcd.FSStat.gui;
 
 import io.vertx.core.Vertx;
 import pcd.FSStat.common.Report;
-import pcd.FSStat.eventLoop.FSStatEventLoop;
+import pcd.FSStat.eventLoop.FSStatEventLoopInteractive;
 import pcd.FSStat.reactiveRx.FSStatLibReactiveInteractive;
 import pcd.FSStat.virtualThreads.FSStatLibVTInteractive;
 
@@ -206,10 +206,10 @@ public class FSStatTestGUI extends JFrame {
             vtLib.startAnalysis(selectedDirectory.getAbsolutePath(), maxFS, nb, uiListener);
         } else if ("RxJava".equals(activeStrategy)) {
             rxLib = new FSStatLibReactiveInteractive();
-            //rxLib.startAnalysis(selectedDirectory.getAbsolutePath(), maxFS, nb, uiListener);
+            rxLib.startAnalysis(selectedDirectory.getAbsolutePath(), maxFS, nb, uiListener);
         } else {
             vertx = Vertx.vertx();
-            vertx.deployVerticle(new FSStatEventLoop(selectedDirectory.getAbsolutePath(), maxFS, nb));
+            vertx.deployVerticle(new FSStatEventLoopInteractive(selectedDirectory.getAbsolutePath(), maxFS, nb));
         }
     }
 

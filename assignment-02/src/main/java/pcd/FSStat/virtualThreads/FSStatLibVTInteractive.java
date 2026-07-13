@@ -1,6 +1,7 @@
 package pcd.FSStat.virtualThreads;
 
 import pcd.FSStat.common.Report;
+import pcd.FSStat.gui.FSStatTestGUI;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,24 +15,23 @@ public class FSStatLibVTInteractive {
 
     private final ReentrantLock lock = new ReentrantLock();
     private ExecutorService executor;
-    private boolean isStopped = false;
+    private volatile boolean isStopped = false;
 
-    public void getFSReport(String dir, long maxFS, int nb) {
+    public void startAnalysis(String dir, long maxFS, int nb, FSStatTestGUI.StatListener listener) {
 
-        isStopped = false;
-        executor = Executors.newVirtualThreadPerTaskExecutor();
         Report report = new Report(maxFS, nb);
+        executor = Executors.newVirtualThreadPerTaskExecutor();
 
         executor.submit(() -> {
             try {
-                recursiveFileSearch(dir, report, executor);
-            } catch(Exception e) {
-                System.out.println(e.getMessage());
+                recursiveFileSearch(dir, report, executor, listener);
+                listener.onComplete(report);
+            } catch (Exception e) {
+                listener.onError("Interrotto");
             } finally {
                 executor.shutdown();
             }
         });
-
     }
 
     public void stop() {
@@ -41,7 +41,7 @@ public class FSStatLibVTInteractive {
         }
     }
 
-    private void recursiveFileSearch(String dirPath, Report report, ExecutorService executor) {
+    private void recursiveFileSearch(String dirPath, Report report, ExecutorService executor, FSStatTestGUI.StatListener listener) {
         if (isStopped || Thread.currentThread().isInterrupted()) {
             return;
         }
@@ -59,7 +59,7 @@ public class FSStatLibVTInteractive {
 
                 if (child.isDirectory()) {
                     Future<?> future = executor.submit(() -> {
-                        recursiveFileSearch(child.getAbsolutePath(), report, executor);
+                        recursiveFileSearch(child.getAbsolutePath(), report, executor, listener);
                     });
                     futures.add(future);
                 }
@@ -68,6 +68,10 @@ public class FSStatLibVTInteractive {
                     lock.lock();
                     try {
                         report.addFile(child.length());
+
+                        if (report.getTotalFiles() % 100 == 0) {
+                            listener.onProgress(report);
+                        }
                     } finally {
                         lock.unlock();
                     }
@@ -81,6 +85,9 @@ public class FSStatLibVTInteractive {
             try {
                 task.get();
             } catch (Exception e) {
+                if (e.getCause() instanceof InterruptedException || isStopped) {
+                    return;
+                }
                 throw new RuntimeException(e);
             }
         }
