@@ -32,15 +32,14 @@ public class FSStatTestGUI extends JFrame {
     private BarChartPanel chartPanel;
     private JTextField txtMaxFS;
     private JTextField txtBands;
-    //private JLabel lblStatus;
+    private JLabel lblStatus;
 
-    /*
+
     public interface StatListener {
         void onProgress(Report currentReport);
         void onComplete(Report finalReport);
         void onError(String message);
     }
-     */
 
 
     public FSStatTestGUI() {
@@ -58,7 +57,7 @@ public class FSStatTestGUI extends JFrame {
         chartPanel = new BarChartPanel();
         chartPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(new Color(180, 180, 180), 1),
-                "Distribuzione Dimensioni File",
+                "Grafico",
                 TitledBorder.LEFT,
                 TitledBorder.TOP,
                 new Font("Arial", Font.BOLD, 14)
@@ -89,9 +88,9 @@ public class FSStatTestGUI extends JFrame {
 
         //parametri MaxFS e NB
         gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0.1;
-        configPanel.add(new JLabel("MaxFS (MB):"), gbc);
+        configPanel.add(new JLabel("MaxFS (KB):"), gbc);
 
-        txtMaxFS = new JTextField("100"); //100 MB di default
+        txtMaxFS = new JTextField("100"); //100 KB di default
         gbc.gridx = 1; gbc.gridy = 1; gbc.weightx = 0.2;
         configPanel.add(txtMaxFS, gbc);
 
@@ -127,9 +126,11 @@ public class FSStatTestGUI extends JFrame {
         btnStart.setPreferredSize(new Dimension(180, 40));
         btnStart.setFocusPainted(false);
 
+        lblStatus = new JLabel(" Pronto per iniziare.");
+
         buttonPanel.add(btnStop);
         buttonPanel.add(btnStart);
-        //buttonPanel.add(lblStatus);
+        buttonPanel.add(lblStatus);
 
         bottomPanel.add(buttonPanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -159,7 +160,7 @@ public class FSStatTestGUI extends JFrame {
         long maxFS;
         int nb;
         try {
-            maxFS = Long.parseLong(txtMaxFS.getText().trim()) * 1024 * 1024;
+            maxFS = Long.parseLong(txtMaxFS.getText().trim()) * 1024;
             nb = Integer.parseInt(txtBands.getText().trim());
             if (maxFS <= 0 || nb <= 0) throw new NumberFormatException();
         } catch (NumberFormatException ex) {
@@ -169,16 +170,15 @@ public class FSStatTestGUI extends JFrame {
 
         activeStrategy = comboStrategy.getSelectedItem().toString();
         setUiSearchingState(true);
-        //lblStatus.setText(" Scansione in corso con " + activeStrategy + "...");
+        lblStatus.setText(" Scansione in corso con " + activeStrategy + "...");
 
         //cancello grafico vecchio
         chartPanel.updateReport(new Report(maxFS, nb));
 
         //diciamo alla GUI cosa fare quando le librerie inviano dati
-        /*StatListener uiListener = new StatListener() {
+        StatListener uiListener = new StatListener() {
             @Override
             public void onProgress(Report report) {
-                // Impacchettiamo per il Thread della Grafica (Swing)
                 SwingUtilities.invokeLater(() -> chartPanel.updateReport(report));
             }
 
@@ -198,13 +198,15 @@ public class FSStatTestGUI extends JFrame {
                     setUiSearchingState(false);
                 });
             }
-        };*/
+        };
 
         //avvio della libreria scelta
         if ("Virtual Threads".equals(activeStrategy)) {
             vtLib = new FSStatLibVTInteractive();
+            vtLib.startAnalysis(selectedDirectory.getAbsolutePath(), maxFS, nb, uiListener);
         } else if ("RxJava".equals(activeStrategy)) {
             rxLib = new FSStatLibReactiveInteractive();
+            //rxLib.startAnalysis(selectedDirectory.getAbsolutePath(), maxFS, nb, uiListener);
         } else {
             vertx = Vertx.vertx();
             vertx.deployVerticle(new FSStatEventLoop(selectedDirectory.getAbsolutePath(), maxFS, nb));
@@ -217,19 +219,13 @@ public class FSStatTestGUI extends JFrame {
         } else if ("RxJava".equals(activeStrategy)) {
             rxLib.stop();
         } else {
-            /*vertx.close(res -> {
-                SwingUtilities.invokeLater(() -> {
-                    lblStatus.setText(" Vert.x arrestato.");
-                    setUiSearchingState(false);
-                });
-            });
-        }*/
-            vertx.close(); //se decommenti sopra, commenta qui
+            vertx.close();
+            lblStatus.setText(" Vert.x arrestato.");
         }
 
         if (!"Vert.x".equals(activeStrategy)) {
             setUiSearchingState(false);
-            //lblStatus.setText(" Interrotto dall'utente.");
+            lblStatus.setText(" Interrotto dall'utente.");
         }
     }
 
