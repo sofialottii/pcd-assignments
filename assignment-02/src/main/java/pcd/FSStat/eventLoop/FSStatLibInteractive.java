@@ -5,6 +5,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.file.FileSystem;
 import pcd.FSStat.common.Report;
+import pcd.FSStat.gui.FSStatTestGUI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,24 +13,26 @@ import java.util.List;
 public class FSStatLibInteractive {
 
     private final FileSystem fs;
-    private boolean isStopped = false;
+    private volatile boolean isStopped = false;
 
     public FSStatLibInteractive(FileSystem fs) {
         this.fs = fs;
     }
 
-    public void getFSReport(String dir, long maxFS, int nb) {
+    public void startAnalysis(String dir, long maxFS, int nb, FSStatTestGUI.StatListener listener) {
 
         isStopped = false;
-        Promise<Report> promise = Promise.promise();
         Report report = new Report(maxFS, nb);
 
-        getFSRecursiveReport(dir, report).onComplete(res -> {
+        getFSRecursiveReport(dir, report, listener).onComplete(res -> {
+            if (isStopped) {
+                return;
+            }
             if(res.succeeded()){
-                promise.complete(report);
+                listener.onComplete(report);
             }
             else {
-                promise.fail(res.cause());
+                listener.onError(res.cause().getMessage());
             }
 
         });
@@ -39,13 +42,23 @@ public class FSStatLibInteractive {
         isStopped = true;
     }
 
-    private Future<Void> getFSRecursiveReport(String dir, Report report){
+    private Future<Void> getFSRecursiveReport(String dir, Report report, FSStatTestGUI.StatListener listener){
         Promise<Void> promise = Promise.promise();
+
+        if (isStopped) {
+            promise.complete();
+            return promise.future();
+        }
 
         //leggiamo la lista di file e dir dentro la directory attuale
         Future<List<String>> fileList = fs.readDir(dir);
 
         fileList.onComplete((AsyncResult<List<String>> resDir) -> {
+            if (isStopped) {
+                promise.complete();
+                return;
+            }
+
             if (resDir.failed()){
                 promise.fail(resDir.cause());
                 return;
@@ -53,7 +66,8 @@ public class FSStatLibInteractive {
 
             List<Future<?>> futures = new ArrayList<>();
 
-            for (String file : resDir.result()) {  //iteriamo i file
+            for (String file : resDir.result()) {
+                if (isStopped) break;
 
                 Promise<Void> fileProps = Promise.promise();//leggiamo le proprietà del file
                 futures.add(fileProps.future());
@@ -65,7 +79,7 @@ public class FSStatLibInteractive {
                     }
 
                     if (resProps.result().isDirectory()){
-                        getFSRecursiveReport(file, report).onComplete(resRec -> {
+                        getFSRecursiveReport(file, report, listener).onComplete(resRec -> {
                             if (resRec.succeeded()){
                                 fileProps.complete();
                             }
@@ -76,6 +90,9 @@ public class FSStatLibInteractive {
                     }
                     else{
                         report.addFile(resProps.result().size());
+                        if (report.getTotalFiles() % 100 == 0) {
+                            listener.onProgress(report);
+                        }
                         fileProps.complete();
                     }
 

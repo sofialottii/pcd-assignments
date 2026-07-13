@@ -17,6 +17,7 @@ public class FSStatTestGUI extends JFrame {
 
     private FSStatLibVTInteractive vtLib;
     private FSStatLibReactiveInteractive rxLib;
+    private FSStatEventLoopInteractive elLib;
     private Vertx vertx;
 
     //componenti stato applicazione
@@ -208,25 +209,28 @@ public class FSStatTestGUI extends JFrame {
             rxLib = new FSStatLibReactiveInteractive();
             rxLib.startAnalysis(selectedDirectory.getAbsolutePath(), maxFS, nb, uiListener);
         } else {
-            vertx = Vertx.vertx();
-            vertx.deployVerticle(new FSStatEventLoopInteractive(selectedDirectory.getAbsolutePath(), maxFS, nb));
+            if (vertx == null)
+                vertx = Vertx.vertx();
+            elLib = new FSStatEventLoopInteractive(selectedDirectory.getAbsolutePath(), maxFS, nb, uiListener);
+            vertx.deployVerticle(elLib);
         }
     }
 
     private void stopAnalysis() {
         if ("Virtual Threads".equals(activeStrategy) && vtLib != null) {
             vtLib.stop();
-        } else if ("RxJava".equals(activeStrategy)) {
+        } else if ("RxJava".equals(activeStrategy) && rxLib != null) {
             rxLib.stop();
-        } else {
-            vertx.close();
-            lblStatus.setText(" Vert.x arrestato.");
+        } else if ("Vert.x".equals(activeStrategy) && elLib != null) {
+            try {
+                elLib.stop();
+            } catch (Exception ignored) {
+            }
         }
 
-        if (!"Vert.x".equals(activeStrategy)) {
-            setUiSearchingState(false);
-            lblStatus.setText(" Interrotto dall'utente.");
-        }
+        setUiSearchingState(false);
+        lblStatus.setText(" Interrotto.");
+
     }
 
     private void setUiSearchingState(boolean isSearching) {
