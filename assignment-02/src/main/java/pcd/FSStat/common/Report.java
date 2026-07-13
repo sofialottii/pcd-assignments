@@ -54,4 +54,12 @@ public class Report {
 
         return res;
     }
+    public synchronized int getTotalFiles() {
+        return this.totalFiles;
+    }
+
+    // Ritorna una copia ordinata delle bande per evitare problemi di concorrenza durante la lettura
+    public synchronized NavigableMap<Long, Integer> getBandsSnapshot() {
+        return new TreeMap<>(this.bands);
+    }
 }
