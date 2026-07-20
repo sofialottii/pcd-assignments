@@ -59,8 +59,9 @@ public class FSStatLibInteractive {
                 return;
             }
 
-            if (resDir.failed()){
-                promise.fail(resDir.cause());
+            if (resDir.failed()) {
+                // completiamo la promise corrente ignorando la cartella non accessibile
+                promise.complete();
                 return;
             }
 
@@ -73,6 +74,10 @@ public class FSStatLibInteractive {
                 futures.add(fileProps.future());
 
                 fs.props(file).onComplete((resProps) -> {
+                    if (isStopped) {
+                        fileProps.complete();
+                        return;
+                    }
                     if (resProps.failed()){
                         fileProps.fail(resProps.cause());
                         return;
