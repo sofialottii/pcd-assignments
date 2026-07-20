@@ -61,6 +61,9 @@ public class FSStatLibReactiveInteractive {
         }
         try {
             File dir = new File(dirPath);
+            if (!dir.isDirectory()) {
+                return;
+            }
             File[] directoryListing = dir.listFiles();
             if (directoryListing != null) {
                 for (File child : directoryListing) {
@@ -68,12 +71,10 @@ public class FSStatLibReactiveInteractive {
 
                     if (child.isDirectory()) {
                         recursiveFileSearch(emitter, child.getAbsolutePath());
-                    } else {
+                    } else if(child.isFile()) {
                         emitter.onNext(child.length());
                     }
                 }
-            } else {
-                emitter.onError(new Throwable(dir + "is not a directory"));
             }
         } catch (Exception e) {
             emitter.onError(e);
