@@ -169,6 +169,9 @@ public class FSStatTestGUI extends JFrame {
             return;
         }
 
+        // --- ACQUISIZIONE TEMPO DI INIZIO ---
+        long startTime = System.nanoTime();
+
         activeStrategy = comboStrategy.getSelectedItem().toString();
         setUiSearchingState(true);
         lblStatus.setText(" Scansione in corso con " + activeStrategy + "...");
@@ -189,6 +192,15 @@ public class FSStatTestGUI extends JFrame {
                     chartPanel.updateReport(finalReport);
                     lblStatus.setText(" Completato!");
                     setUiSearchingState(false);
+
+                    // --- CALCOLO TEMPO TRASCORSO E POP-UP MOCKUP ---
+                    long elapsedTime = (System.nanoTime() - startTime) / 1_000_000;
+                    JOptionPane.showMessageDialog(
+                            FSStatTestGUI.this, // Sostituisci con il nome corretto della tua classe JFrame se diverso
+                            "Completed successfully in " + elapsedTime + " ms",
+                            "Analisi Completata",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
                 });
             }
 
