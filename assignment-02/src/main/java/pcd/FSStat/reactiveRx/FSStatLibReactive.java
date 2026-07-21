@@ -1,6 +1,7 @@
 package pcd.FSStat.reactiveRx;
 
 import io.reactivex.rxjava3.core.*;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import pcd.FSStat.common.Report;
 
 import java.io.File;
@@ -14,7 +15,7 @@ public class FSStatLibReactive {
      * @param emitter
      * @param dirPath
      */
-    private static void recursiveFileSearch(FlowableEmitter<Long> emitter, String dirPath) {
+    private static void recursiveFileSearch(ObservableEmitter<Long> emitter, String dirPath) {
         try {
             File dir = new File(dirPath);
             File[] directoryListing = dir.listFiles();
@@ -39,13 +40,13 @@ public class FSStatLibReactive {
      * @param dirPath the path
      * @return a Flowable which contains the size of the files
      */
-    private static Flowable<Long> getColdStream(String dirPath) {
-        Flowable<Long> source = Flowable.create(emitter -> {
-            new Thread(() -> {
-                recursiveFileSearch(emitter, dirPath);
-                emitter.onComplete();
-            }).start();
-        }, BackpressureStrategy.BUFFER);
+    private static Observable<Long> getColdStream(String dirPath) {
+
+        Observable<Long> source = Observable.create(emitter -> {
+            recursiveFileSearch(emitter, dirPath);
+            emitter.onComplete();
+
+        });
 
         return source;
     }
@@ -61,15 +62,29 @@ public class FSStatLibReactive {
 
         Report report = new Report(maxFS, nb);
 
-        Flowable<Long> source = getColdStream(dir);
+        Observable<Long> source = getColdStream(dir);
 
-        source.onBackpressureBuffer(5_000, () -> {
+        source.blockingSubscribe(report::addFile);
+
+        /*source.onBackpressureBuffer(5_000, () -> {
             System.out.println("HELP!");
         }).blockingSubscribe(report::addFile,
                 error -> {
                     System.err.println("Flow error: " + error.getMessage());
                 }
-        );
+        );*/
+
+
         return report;
     }
 }
+
+/**
+ * domande a cui dobbiamo trovare risposta:
+ *
+ * * differenza tra subscribeOn e observeOn, e se vengono usati solo con schedulers
+ * * se creare nuovo thread è sbagliato e bisogna lavorare direttamente con schedulers
+ * * se lavorare con schedulers significa automaticamente cold stream e non hot stream, o se sono cose completamente diverse
+ *
+ *
+ */
