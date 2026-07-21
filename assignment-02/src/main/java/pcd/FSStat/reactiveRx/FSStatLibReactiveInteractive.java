@@ -1,8 +1,7 @@
 package pcd.FSStat.reactiveRx;
 
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.FlowableEmitter;
+import io.reactivex.rxjava3.core.*;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import pcd.FSStat.common.Report;
 import pcd.FSStat.gui.FSStatTestGUI;
 
@@ -16,20 +15,17 @@ public class FSStatLibReactiveInteractive {
 
         isStopped = false;
         Report report = new Report(maxFS, nb);
-        Flowable<Long> source = getColdStream(dir);
+        Observable<Long> source = getColdStream(dir);
 
-        source.onBackpressureBuffer(5_000, () -> {
-            System.out.println("HELP!");
-        }).subscribe(size -> {
+        source.subscribeOn(Schedulers.io()).subscribe(size -> {
                     if (isStopped) return;
 
                     report.addFile(size);
                     if (report.getTotalFiles() % 100 == 0) {
                         listener.onProgress(report);
                     }
-                },
-                error -> {
-                    listener.onError("Errore Flowable: " + error.getMessage());
+                }, error -> {
+                    listener.onError("Errore Observable: " + error.getMessage());
                 },
                 () -> {
                     if (!isStopped) {
@@ -44,19 +40,18 @@ public class FSStatLibReactiveInteractive {
         isStopped = true;
     }
 
-    private Flowable<Long> getColdStream(String dirPath) {
-        Flowable<Long> source = Flowable.create(emitter -> {
-            new Thread(() -> {
-                recursiveFileSearch(emitter, dirPath);
+    private Observable<Long> getColdStream(String dirPath) {
+        return Observable.create(emitter -> {
+            recursiveFileSearch(emitter, dirPath);
+            if (!emitter.isDisposed()) {
                 emitter.onComplete();
-            }).start();
-        }, BackpressureStrategy.BUFFER);
+            }
+        });
 
-        return source;
     }
 
-    private void recursiveFileSearch(FlowableEmitter<Long> emitter, String dirPath) {
-        if (isStopped || emitter.isCancelled()) {
+    private void recursiveFileSearch(ObservableEmitter<Long> emitter, String dirPath) {
+        if (isStopped || emitter.isDisposed()) {
             return;
         }
         try {
@@ -67,7 +62,7 @@ public class FSStatLibReactiveInteractive {
             File[] directoryListing = dir.listFiles();
             if (directoryListing != null) {
                 for (File child : directoryListing) {
-                    if (isStopped || emitter.isCancelled()) return;
+                    if (isStopped) return;
 
                     if (child.isDirectory()) {
                         recursiveFileSearch(emitter, child.getAbsolutePath());

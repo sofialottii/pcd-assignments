@@ -21,6 +21,9 @@ public class FSStatLibReactive {
             File[] directoryListing = dir.listFiles();
             if (directoryListing != null) {
                 for (File child : directoryListing) {
+                    if (emitter.isDisposed()) {
+                        return;
+                    }
                     if (child.isDirectory()) {
                         recursiveFileSearch(emitter, child.getAbsolutePath());
                     } else {
@@ -42,13 +45,12 @@ public class FSStatLibReactive {
      */
     private static Observable<Long> getColdStream(String dirPath) {
 
-        Observable<Long> source = Observable.create(emitter -> {
+        return Observable.create(emitter -> {
             recursiveFileSearch(emitter, dirPath);
-            emitter.onComplete();
-
+            if (!emitter.isDisposed()) {
+                emitter.onComplete();
+            }
         });
-
-        return source;
     }
 
     /**
@@ -64,27 +66,9 @@ public class FSStatLibReactive {
 
         Observable<Long> source = getColdStream(dir);
 
-        source.blockingSubscribe(report::addFile);
-
-        /*source.onBackpressureBuffer(5_000, () -> {
-            System.out.println("HELP!");
-        }).blockingSubscribe(report::addFile,
-                error -> {
-                    System.err.println("Flow error: " + error.getMessage());
-                }
-        );*/
-
+        source.subscribeOn(Schedulers.io()).blockingSubscribe(report::addFile);
 
         return report;
     }
 }
 
-/**
- * domande a cui dobbiamo trovare risposta:
- *
- * * differenza tra subscribeOn e observeOn, e se vengono usati solo con schedulers
- * * se creare nuovo thread è sbagliato e bisogna lavorare direttamente con schedulers
- * * se lavorare con schedulers significa automaticamente cold stream e non hot stream, o se sono cose completamente diverse
- *
- *
- */
