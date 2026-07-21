@@ -25,7 +25,10 @@ public class FSStatLibVTInteractive {
         executor.submit(() -> {
             try {
                 recursiveFileSearch(dir, report, executor, listener);
-                listener.onComplete(report);
+                //il completamento così è notificato solo se non si preme stop
+                if (!isStopped && !Thread.currentThread().isInterrupted()) {
+                    listener.onComplete(report);
+                }
             } catch (Exception e) {
                 listener.onError("Interrotto");
             } finally {
@@ -35,8 +38,8 @@ public class FSStatLibVTInteractive {
     }
 
     public void stop() {
+        isStopped = true;
         if (executor != null && !executor.isShutdown()) {
-            isStopped = true;
             executor.shutdownNow();
         }
     }
@@ -49,47 +52,54 @@ public class FSStatLibVTInteractive {
         File dir = new File(dirPath);
         File[] directoryListing = dir.listFiles();
 
-        List<Future<?>> futures = new ArrayList<>();
+        if (directoryListing == null) {
+            System.err.println("Impossible to read: " + dirPath);
+            return;
+        }
 
-        if (directoryListing != null) {
-            for (File child : directoryListing) {
+        List<Future<?>> subDirectoryFutures = new ArrayList<>();
+
+
+        for (File child : directoryListing) {
+            if (isStopped) {
+                return;
+            }
+
+            if (child.isDirectory()) {
+                Future<?> future = executor.submit(() -> {
+                    recursiveFileSearch(child.getAbsolutePath(), report, executor, listener);
+                });
+                subDirectoryFutures.add(future);
+            } else if (child.isFile()) {
+                lock.lock();
+                try {
+                    report.addFile(child.length());
+
+                    if (report.getTotalFiles() % 100 == 0) {
+                        listener.onProgress(report);
+                    }
+                } finally {
+                    lock.unlock();
+                }
+            }
+        }
+
+
+        for (Future<?> task : subDirectoryFutures) {
+            try {
+                // Attende che la sottocartella finisca
+                task.get();
+            } catch (InterruptedException e) {
+                // Ripristina lo stato di interruzione se il task corrente viene stoppato
+                Thread.currentThread().interrupt();
+                return;
+            } catch (Exception e) {
+                // Gestione di eventuali eccezioni lanciate nei sotto-task
                 if (isStopped) {
                     return;
                 }
-
-                if (child.isDirectory()) {
-                    Future<?> future = executor.submit(() -> {
-                        recursiveFileSearch(child.getAbsolutePath(), report, executor, listener);
-                    });
-                    futures.add(future);
-                }
-
-                else if (child.isFile()) {
-                    lock.lock();
-                    try {
-                        report.addFile(child.length());
-
-                        if (report.getTotalFiles() % 100 == 0) {
-                            listener.onProgress(report);
-                        }
-                    } finally {
-                        lock.unlock();
-                    }
-                }
             }
-        } else {
-            System.err.println("Impossible to read: " + dirPath);
-        }
 
-        for (Future<?> task : futures) {
-            try {
-                task.get();
-            } catch (Exception e) {
-                if (e.getCause() instanceof InterruptedException || isStopped) {
-                    return;
-                }
-                throw new RuntimeException(e);
-            }
         }
     }
 }
