@@ -87,14 +87,11 @@ public class FSStatLibVTInteractive {
 
         for (Future<?> task : subDirectoryFutures) {
             try {
-                // Attende che la sottocartella finisca
                 task.get();
             } catch (InterruptedException e) {
-                // Ripristina lo stato di interruzione se il task corrente viene stoppato
                 Thread.currentThread().interrupt();
                 return;
             } catch (Exception e) {
-                // Gestione di eventuali eccezioni lanciate nei sotto-task
                 if (isStopped) {
                     return;
                 }
