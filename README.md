@@ -36,8 +36,3 @@ The `assignment-02` folder in the repo includes:
   3. `virtualThreads` version
 * `doc` folder with a short report in PDF (`report.pdf`)
 
-
-
-## Assignment #03
-
-## Assignment #04
